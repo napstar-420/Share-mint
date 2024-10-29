@@ -42,14 +42,6 @@ Join the discussion in [discord](https://discord.gg/2a6XheJr)
 
 - Open your browser and go to http://localhost:3000 to see the app in action!
 
-### Project structure
-    Share mint/
-    ├── components/       # Reusable UI components (e.g., UploadForm, ImagePreview)
-    ├── pages/            # Next.js pages (e.g., index.js, upload.js)
-    ├── public/           # Public assets like logos, icons, etc.
-    ├── styles/           # CSS files for styling
-    └── utils/            # Utility functions (e.g., image handling, link generation)
-
 ### 🤝 Contributing
 We welcome contributions! To get started:
 
