@@ -2,6 +2,8 @@
 
 **Share mint** is a web application that makes sharing high-quality images with friends, family, or colleagues easy and convenient. Unlike traditional messaging or social media apps, which compress images, Share mint ensures your photos retain their original quality. Simply upload an image, receive a unique link, and share it with anyone. When the recipient clicks on the link, they’ll be able to download the full-resolution image directly.
 
+Join the discussion in [discord](https://discord.gg/2a6XheJr)
+
 ---
 
 ## 🔗 Live Demo
