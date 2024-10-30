@@ -1,0 +1,7 @@
+# Ignore artifacts:
+.next
+next-env.d.ts
+node_modules
+LICENSE.md
+README.md
+.gitignore
