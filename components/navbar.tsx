@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { CONFIG } from '@/app/config'
 import { ToggleTheme } from '@/components/theme-toggle'
-import { FaUser } from "react-icons/fa6";
+import { FaUser } from 'react-icons/fa6'
 
 export function Navbar() {
   return (

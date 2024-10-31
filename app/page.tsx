@@ -1,8 +1,8 @@
 import { BackgroundGrid } from '@/components/background-grid'
 import { Button } from '@/components/ui/button'
-import Link from 'next/link'
 import { FaArrowRight } from 'react-icons/fa'
 import { CONFIG } from '@/app/config'
+import Link from 'next/link'
 
 export default function Home() {
   return (
@@ -21,7 +21,7 @@ export default function Home() {
             porro quibusdam molestias.
           </p>
           <Button
-          asChild
+            asChild
             variant="default"
             className="bg-brand-primary text-lg font-semibold py-7 px-8"
           >
