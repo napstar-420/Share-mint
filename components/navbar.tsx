@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { CONFIG } from '@/app/config'
+import { ToggleTheme } from '@/components/theme-toggle'
+import { FaUser } from "react-icons/fa6";
 
 export function Navbar() {
   return (
@@ -12,9 +14,17 @@ export function Navbar() {
       >
         Share<span className="text-brand-primary">mint</span>
       </Link>
-      <Button asChild variant="default" className="font-bold">
-        <Link href={CONFIG.ROUTE.LOGIN}>Sign in</Link>
-      </Button>
+      <div className="flex items-center gap-2 sm:gap-4">
+        <ToggleTheme />
+        {/* Desktop login button */}
+        <Button asChild className="font-bold hidden sm:block">
+          <Link href={CONFIG.ROUTE.LOGIN}>Sign in</Link>
+        </Button>
+        {/* Mobile login button */}
+        <Button size="icon" className="sm:hidden text-2xl">
+          <FaUser />
+        </Button>
+      </div>
     </nav>
   )
 }
