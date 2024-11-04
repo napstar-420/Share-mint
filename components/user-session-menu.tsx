@@ -23,10 +23,12 @@ export default function UserSessionMenu({ session }: { session: Session | null }
           <UserAvatar session={session} />
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">
-          <DropdownMenuLabel>{session.user.name}</DropdownMenuLabel>
+          <DropdownMenuLabel>Hi {session.user.name}!</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem>My images</DropdownMenuItem>
+            <DropdownMenuItem className="p-0 m-0">
+              <Link href={CONFIG.ROUTE.ACCOUNT} className='p-2 w-full h-full hover:bg-secondary rounded-sm'>My images</Link>
+            </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem>

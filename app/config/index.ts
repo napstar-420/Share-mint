@@ -6,6 +6,7 @@ export const CONFIG = {
     DOWNLOAD: '/download',
     ABOUT: '/about',
     CONTACT: '/contact',
+    ACCOUNT: '/account'
   },
 
   FILE_TYPES: {
