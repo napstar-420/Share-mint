@@ -103,7 +103,7 @@ export const images = pgTable(
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
     file_name: varchar('file_name', { length: 255 }).notNull(),
-    file_type: ImageTypeEnum().notNull(),
+    file_type: ImageTypeEnum(),
     file_size: integer('file_size').notNull(),
     upload_date: timestamp('upload_date').defaultNow().notNull(),
     share_link: varchar('share_link', { length: 255 }).notNull().unique(),
