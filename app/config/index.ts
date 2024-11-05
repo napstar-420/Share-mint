@@ -6,7 +6,7 @@ export const CONFIG = {
     DOWNLOAD: '/download',
     ABOUT: '/about',
     CONTACT: '/contact',
-    ACCOUNT: '/account'
+    ACCOUNT: '/account',
   },
 
   FILE_TYPES: {
@@ -18,9 +18,11 @@ export const CONFIG = {
       'image/gif',
       'image/heic',
       'image/ico',
+      'image/bmp',
     ],
   },
 
   MAX_FILE_SIZE: 50 * 1024 * 1024, // in bytes
   MAX_FILES_PER_BATCH: 100,
+  MAX_CONCURRENT_UPLOADS: 10,
 }

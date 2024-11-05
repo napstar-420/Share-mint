@@ -7,11 +7,20 @@ import { bytesToMegaBytes, readableFileType } from '@/lib/utils'
 
 interface ComponentProps {
   files: File[]
+  uploadQueue: number[]
   onCancelUpload: (i: number) => void
 }
 
-export function FilesUploadList({ files, onCancelUpload }: ComponentProps) {
+export function FilesUploadList({
+  files,
+  uploadQueue,
+  onCancelUpload,
+}: ComponentProps) {
   const [previews, setPreviews] = useState<Record<number, string>>({})
+
+  const isFileUploading = (index: number) => {
+    return uploadQueue.findIndex((i) => i === index) > -1 ? true : false
+  }
 
   useEffect(() => {
     const newPreviews: Record<number, string> = {}
@@ -32,7 +41,7 @@ export function FilesUploadList({ files, onCancelUpload }: ComponentProps) {
         files.map((file, index) => (
           <div
             key={index}
-            className="border-2 border-primary-foreground p-2 rounded-xl"
+            className={`border-2 border-primary-foreground p-2 rounded-xl ${isFileUploading(index) ? 'bg-brand-primary' : ''}`}
           >
             <div className="w-full grid grid-cols-[auto_1fr_auto] gap-4 items-center mb-2">
               <div
@@ -66,7 +75,7 @@ export function FilesUploadList({ files, onCancelUpload }: ComponentProps) {
                 <MdCancel />
               </Button>
             </div>
-            <Progress value={Math.random() * 100} />
+            <Progress value={0} />
           </div>
         ))
       ) : (

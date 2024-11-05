@@ -3,6 +3,7 @@ import { Poppins } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 import { Navbar } from '@/components/navbar'
+import { Toaster } from '@/components/ui/sonner'
 
 const poppins = Poppins({
   weight: ['400'],
@@ -38,6 +39,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+            <Toaster />
             <Navbar />
             {children}
           </ThemeProvider>

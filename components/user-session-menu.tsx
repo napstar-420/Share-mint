@@ -15,7 +15,11 @@ import UserAvatar from '@/components/user-avatar'
 import { Session } from 'next-auth'
 import { SignOut } from '@/components/signout-button'
 
-export default function UserSessionMenu({ session }: { session: Session | null }) {
+export default function UserSessionMenu({
+  session,
+}: {
+  session: Session | null
+}) {
   if (session?.user) {
     return (
       <DropdownMenu>
@@ -27,7 +31,12 @@ export default function UserSessionMenu({ session }: { session: Session | null }
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem className="p-0 m-0">
-              <Link href={CONFIG.ROUTE.ACCOUNT} className='p-2 w-full h-full hover:bg-secondary rounded-sm'>My images</Link>
+              <Link
+                href={CONFIG.ROUTE.ACCOUNT}
+                className="p-2 w-full h-full hover:bg-secondary rounded-sm"
+              >
+                My images
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />

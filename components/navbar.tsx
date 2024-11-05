@@ -5,7 +5,7 @@ import UserSessionMenu from './user-session-menu'
 import { auth } from '@/auth'
 
 export async function Navbar() {
-  const session = await auth();
+  const session = await auth()
 
   return (
     <nav className="py-10 flex items-center justify-between">
@@ -18,7 +18,7 @@ export async function Navbar() {
       </Link>
       <div className="flex items-center gap-2 sm:gap-4">
         <ToggleTheme />
-        <UserSessionMenu session={session}/>
+        <UserSessionMenu session={session} />
       </div>
     </nav>
   )
