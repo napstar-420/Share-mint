@@ -1,8 +1,8 @@
 import Image from "next/image";
-import SVGIMG from "@/404.svg";
+import SVGIMG from "@/public/404.svg";
 import { BackgroundGrid } from "@/components/background-grid";
 import Link from "next/link";
-import { CONFIG } from "@/config"; // Adjusted alias
+import { CONFIG } from "@/app/config";
 
 export default function NotFound() {
   return (
