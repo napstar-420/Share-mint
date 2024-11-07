@@ -25,4 +25,10 @@ export const CONFIG = {
   MAX_FILE_SIZE: 50 * 1024 * 1024, // in bytes
   MAX_FILES_PER_BATCH: 100,
   MAX_CONCURRENT_UPLOADS: 10,
+
+  DRIVE: {
+    FILE_UPLOAD: {
+      MULTIPART_ENDPOINT: "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart"
+    }
+  }
 }
