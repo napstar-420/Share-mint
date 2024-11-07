@@ -61,6 +61,7 @@ export const ImageTypeEnum = pgEnum('file_type', [
   'image/gif',
   'image/heic',
   'image/ico',
+  'image/bmp',
 ])
 
 export const images = pgTable(

@@ -15,6 +15,13 @@
       "when": 1730982456397,
       "tag": "0001_drop-unused-tables",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1730982692898,
+      "tag": "0002_extend-image-types",
+      "breakpoints": true
     }
   ]
 }
