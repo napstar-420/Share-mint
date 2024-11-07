@@ -28,7 +28,10 @@ export const CONFIG = {
 
   DRIVE: {
     FILE_UPLOAD: {
-      MULTIPART_ENDPOINT: "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart"
-    }
-  }
+      MULTIPART_ENDPOINT:
+        'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',
+    },
+  },
+
+  UNIQUE_IDENTIFIER_LENGTH: 8
 }

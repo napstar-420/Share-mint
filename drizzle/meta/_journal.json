@@ -22,6 +22,20 @@
       "when": 1730982692898,
       "tag": "0002_extend-image-types",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1730984758314,
+      "tag": "0003_add-drive-id-column",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1730992550173,
+      "tag": "0004_easy_karnak",
+      "breakpoints": true
     }
   ]
 }

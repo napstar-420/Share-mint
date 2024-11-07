@@ -1,5 +1,7 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
+import { nanoid } from 'nanoid';
+import { CONFIG } from '@/app/config';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -19,4 +21,8 @@ export function randomId(length = 6) {
   return Math.random()
     .toString(36)
     .substring(2, length + 2)
+}
+
+export function generateUniqueIdentifier() {
+  return nanoid(CONFIG.UNIQUE_IDENTIFIER_LENGTH);
 }

@@ -1,6 +1,6 @@
 {
-  "id": "43f21944-3969-42a1-8c1a-d19677269947",
-  "prevId": "4cd257d1-2dcd-4598-86e5-a0c7eb79bd6a",
+  "id": "cd01e0d7-98c4-410e-91cf-e3c91bfc4efb",
+  "prevId": "43f21944-3969-42a1-8c1a-d19677269947",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -135,6 +135,12 @@
         "file_size": {
           "name": "file_size",
           "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "drive_id": {
+          "name": "drive_id",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": true
         },
