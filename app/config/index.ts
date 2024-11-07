@@ -1,9 +1,13 @@
+import 'dotenv/config'
+
+const APP_URLS = {
+  development: 'http://localhost:3000',
+  production: 'https://share-mint.vercel.app',
+  test: '',
+}
+
 export const CONFIG = {
-  APP_URL: {
-    development: 'http://localhost:3000',
-    production: 'https://share-mint.vercel.app',
-    test: '',
-  },
+  APP_URL: APP_URLS[process.env.NODE_ENV],
   ROUTE: {
     HOME: '/',
     LOGIN: '/login',
@@ -12,6 +16,9 @@ export const CONFIG = {
     ABOUT: '/about',
     CONTACT: '/contact',
     ACCOUNT: '/account',
+    API: {
+      UPLOAD: '/api/upload'
+    }
   },
 
   FILE_TYPES: {

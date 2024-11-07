@@ -29,7 +29,7 @@ export function generateUniqueIdentifier() {
 }
 
 export function createShareLink(identifier: string) {
-  return `${CONFIG.APP_URL[process.env.NODE_ENV]}${CONFIG.ROUTE.DOWNLOAD}/${identifier}`
+  return `${CONFIG.APP_URL}${CONFIG.ROUTE.DOWNLOAD}/${identifier}`
 }
 
 export async function copyToClipboard(data: string) {

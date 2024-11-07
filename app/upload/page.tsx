@@ -74,10 +74,18 @@ export default function UploadPage() {
     }
   }
 
-  const uploadFile = async (_: File): Promise<UploadResponse> => {
-    return new Promise((resolve) =>
-      setTimeout(() => resolve({ share_link: '12345678' }), 5000),
+  const uploadFile = async (file: File): Promise<UploadResponse> => {
+    const formData = new FormData()
+    formData.append('file', file)
+    const response = await fetch(
+      `${CONFIG.APP_URL}/${CONFIG.ROUTE.API.UPLOAD}`,
+      {
+        method: 'POST',
+        body: formData,
+      },
     )
+
+    return response.json()
   }
 
   useEffect(() => {

@@ -93,7 +93,7 @@ export function FilesUploadList({
                   onClick={() =>
                     handleCopyToClipboard(
                       index,
-                      uploadedFiles[index].share_link,
+                      uploadedFiles[index].sharelink,
                     )
                   }
                 >

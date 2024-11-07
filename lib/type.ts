@@ -1,3 +1,3 @@
 export interface UploadResponse {
-  share_link: string
+  sharelink: string
 }
