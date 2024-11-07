@@ -1,38 +1,63 @@
 import { Button } from '@/components/ui/button'
-import { Progress } from '@/components/ui/progress'
-import { MdCancel } from 'react-icons/md'
+import { MdCancel, MdContentCopy, MdDoneAll } from 'react-icons/md'
 import { FaImages } from 'react-icons/fa'
 import { useEffect, useState } from 'react'
-import { bytesToMegaBytes, readableFileType } from '@/lib/utils'
+import {
+  bytesToMegaBytes,
+  readableFileType,
+  copyToClipboard,
+  createShareLink,
+} from '@/lib/utils'
+import { createThumbnail } from '@/lib/images'
+import { Loader2 } from 'lucide-react'
+import { UploadedFiles } from '@/app/upload/page'
+import _ from 'lodash'
+import { toast } from 'sonner'
+import { ImageThumbnail } from '@/components/image-thumbnail'
 
 interface ComponentProps {
   files: File[]
   uploadQueue: number[]
+  uploadedFiles: UploadedFiles
   onCancelUpload: (i: number) => void
 }
 
 export function FilesUploadList({
   files,
   uploadQueue,
+  uploadedFiles,
   onCancelUpload,
 }: ComponentProps) {
   const [previews, setPreviews] = useState<Record<number, string>>({})
+  const [copiedTimeouts, setCopiedTimeouts] = useState<number[]>([])
 
   const isFileUploading = (index: number) => {
     return uploadQueue.findIndex((i) => i === index) > -1 ? true : false
   }
 
+  const handleCopyToClipboard = async (index: number, identifier: string) => {
+    const sharelink = createShareLink(identifier)
+    await copyToClipboard(sharelink)
+
+    if (!copiedTimeouts.includes(index)) {
+      setCopiedTimeouts((prev) => [...prev, index])
+
+      setTimeout(() => {
+        setCopiedTimeouts((prev) => prev.filter((i) => i !== index))
+      }, 2000)
+    }
+
+    toast('Link copied to clipboard!')
+  }
+
   useEffect(() => {
     const newPreviews: Record<number, string> = {}
-    files.forEach((file, index) => {
-      newPreviews[index] = URL.createObjectURL(file)
-      setPreviews(newPreviews)
-    })
-    setPreviews(newPreviews)
 
-    return () => {
-      Object.values(newPreviews).forEach((url) => URL.revokeObjectURL(url))
-    }
+    files.forEach(async (file, index) => {
+      newPreviews[index] = await createThumbnail(file)
+    })
+
+    setPreviews(newPreviews)
   }, [files])
 
   return (
@@ -41,15 +66,13 @@ export function FilesUploadList({
         files.map((file, index) => (
           <div
             key={index}
-            className={`border-2 border-primary-foreground p-2 rounded-xl ${isFileUploading(index) ? 'bg-brand-primary' : ''}`}
+            className={`border-2 border-primary-foreground p-2 rounded-xl`}
           >
-            <div className="w-full grid grid-cols-[auto_1fr_auto] gap-4 items-center mb-2">
-              <div
-                className={`aspect-square w-10 bg-primary-foreground rounded-md bg-cover bg-center`}
-                style={{ backgroundImage: `url(${previews[index]})` }}
-              ></div>
-              <div>
-                <div className="leading-7 [&:not(:first-child)]:mt-6">
+            <div className="w-full grid grid-cols-[auto_1fr_auto] gap-4 items-center">
+              {/* Lazy load and memoize thumbnail image */}
+              <ImageThumbnail src={previews[index]} />
+              <div className="flex flex-col flex-nowrap min-w-0">
+                <div className="leading-7 [&:not(:first-child)]:mt-6 truncate">
                   {file.name}
                 </div>
                 <p className="flex gap-2 items-center flex-wrap">
@@ -60,22 +83,39 @@ export function FilesUploadList({
                   <span className="text-sm text-muted-foreground">
                     {bytesToMegaBytes(file.size, true)}
                   </span>{' '}
-                  •
-                  <span className="text-sm text-muted-foreground">
-                    10 secs left
-                  </span>
                 </p>
               </div>
-              <Button
-                variant="outline"
-                size="icon"
-                className="rounded-full"
-                onClick={() => onCancelUpload(index)}
-              >
-                <MdCancel />
-              </Button>
+              {!_.isUndefined(uploadedFiles[index]) ? (
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-full text-brand-primary hover:text-brand-primary"
+                  onClick={() =>
+                    handleCopyToClipboard(
+                      index,
+                      uploadedFiles[index].share_link,
+                    )
+                  }
+                >
+                  {copiedTimeouts.includes(index) ? (
+                    <MdDoneAll />
+                  ) : (
+                    <MdContentCopy />
+                  )}
+                </Button>
+              ) : isFileUploading(index) ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-full"
+                  onClick={() => onCancelUpload(index)}
+                >
+                  <MdCancel />
+                </Button>
+              )}
             </div>
-            <Progress value={0} />
           </div>
         ))
       ) : (

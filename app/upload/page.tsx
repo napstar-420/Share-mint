@@ -6,6 +6,9 @@ import { UploadDropZone } from '@/components/upload-dropzone'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useEffect, useRef, useState } from 'react'
 import { CONFIG } from '@/app/config'
+import { UploadResponse } from '@/lib/type'
+
+export type UploadedFiles = Record<number, UploadResponse>
 
 export default function UploadPage() {
   const [files, setFiles] = useState<File[]>([])
@@ -13,9 +16,11 @@ export default function UploadPage() {
   const filesRef = useRef<File[]>([])
   const processedFiles = useRef<number[]>([])
   const activeImages = useRef(0)
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFiles>({})
 
   const onCancelUpload = (index: number) => {
     setFiles(files.filter((_, i) => i !== index))
+    processedFiles.current = processedFiles.current.filter((i) => i !== index)
   }
 
   const onAddFiles = (newFiles: File[]) => {
@@ -43,9 +48,13 @@ export default function UploadPage() {
     const file = filesRef.current[fileIndex]
 
     try {
-      await uploadFile(file)
-
-      console.log(`Processing: ${file.name}`)
+      const data = await uploadFile(file)
+      setUploadedFiles((prev) => {
+        return {
+          ...prev,
+          [fileIndex]: data,
+        }
+      })
     } catch (error: unknown) {
       console.error(error)
     } finally {
@@ -65,8 +74,10 @@ export default function UploadPage() {
     }
   }
 
-  const uploadFile = async (_: File) => {
-    return new Promise((resolve) => setTimeout(resolve, 5000))
+  const uploadFile = async (_: File): Promise<UploadResponse> => {
+    return new Promise((resolve) =>
+      setTimeout(() => resolve({ share_link: '12345678' }), 5000),
+    )
   }
 
   useEffect(() => {
@@ -97,6 +108,7 @@ export default function UploadPage() {
           <FilesUploadList
             files={files}
             uploadQueue={uploadQueue}
+            uploadedFiles={uploadedFiles}
             onCancelUpload={onCancelUpload}
           />
         </ScrollArea>

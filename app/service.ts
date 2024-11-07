@@ -56,6 +56,6 @@ export async function uploadFile(file: File) {
 }
 
 export async function deleteFile(fileId: string) {
-  const driveService = getDriveService([DriveScopes.drive]);
+  const driveService = getDriveService([DriveScopes.drive])
   return driveService.files.delete({ fileId })
 }

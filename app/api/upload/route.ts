@@ -13,8 +13,6 @@ export async function POST(req: Request) {
   const session = await auth()
   const formData = await req.formData()
   const file = formData.get('file') as File
-  const arrayBuffer = await file.arrayBuffer()
-  const buffer = Buffer.from(arrayBuffer)
 
   if (!file) {
     return NextResponse.json({ error: 'File not found' }, { status: 400 })
@@ -27,6 +25,9 @@ export async function POST(req: Request) {
     )
   }
 
+  const arrayBuffer = await file.arrayBuffer()
+  const buffer = Buffer.from(arrayBuffer)
+
   let driveId: string = ''
 
   try {
@@ -35,12 +36,12 @@ export async function POST(req: Request) {
       driveId = driveRes.id
     }
   } catch (error: unknown) {
-    console.error(error);
+    console.error(error)
     return NextResponse.json({ error: 'Failed to upload' }, { status: 500 })
   }
 
-  let shareLink = generateUniqueIdentifier();
-  let linkExists = await isLinkExists(shareLink);
+  let shareLink = generateUniqueIdentifier()
+  let linkExists = await isLinkExists(shareLink)
 
   while (linkExists) {
     shareLink = generateUniqueIdentifier()
@@ -57,16 +58,16 @@ export async function POST(req: Request) {
       metadata: metadata,
       uploader_ip: ip,
       uploader_id: session?.user?.id ?? null,
-      share_link: shareLink
+      share_link: shareLink,
     }
 
-    const data = await insertImage(newImage);
-    return NextResponse.json(data)
+    const data = await insertImage(newImage)
+    return NextResponse.json({ sharelink: data?.share_link })
   } catch (error: unknown) {
-    console.error(error);
+    console.error(error)
 
     // Delete the drive file, if we app fails to save it in DB
-    await deleteFile(driveId);
+    await deleteFile(driveId)
     return NextResponse.json({ error: 'Failed to save image' }, { status: 500 })
   }
 }

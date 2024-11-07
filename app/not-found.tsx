@@ -1,8 +1,8 @@
-import Image from "next/image";
-import SVGIMG from "@/public/404.svg";
-import { BackgroundGrid } from "@/components/background-grid";
-import Link from "next/link";
-import { CONFIG } from "@/app/config";
+import Image from 'next/image'
+import SVGIMG from '@/public/404.svg'
+import { BackgroundGrid } from '@/components/background-grid'
+import Link from 'next/link'
+import { CONFIG } from '@/app/config'
 
 export default function NotFound() {
   return (
@@ -37,5 +37,5 @@ export default function NotFound() {
         />
       </div>
     </div>
-  );
+  )
 }

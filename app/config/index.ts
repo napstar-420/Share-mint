@@ -1,9 +1,14 @@
 export const CONFIG = {
+  APP_URL: {
+    development: 'http://localhost:3000',
+    production: 'https://share-mint.vercel.app',
+    test: '',
+  },
   ROUTE: {
     HOME: '/',
     LOGIN: '/login',
     UPLOAD: '/upload',
-    DOWNLOAD: '/download',
+    DOWNLOAD: '/d',
     ABOUT: '/about',
     CONTACT: '/contact',
     ACCOUNT: '/account',
@@ -33,5 +38,5 @@ export const CONFIG = {
     },
   },
 
-  UNIQUE_IDENTIFIER_LENGTH: 8
+  UNIQUE_IDENTIFIER_LENGTH: 8,
 }

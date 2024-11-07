@@ -1,7 +1,8 @@
+import 'dotenv/config'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import { nanoid } from 'nanoid';
-import { CONFIG } from '@/app/config';
+import { nanoid } from 'nanoid'
+import { CONFIG } from '@/app/config'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -24,5 +25,13 @@ export function randomId(length = 6) {
 }
 
 export function generateUniqueIdentifier() {
-  return nanoid(CONFIG.UNIQUE_IDENTIFIER_LENGTH);
+  return nanoid(CONFIG.UNIQUE_IDENTIFIER_LENGTH)
+}
+
+export function createShareLink(identifier: string) {
+  return `${CONFIG.APP_URL[process.env.NODE_ENV]}${CONFIG.ROUTE.DOWNLOAD}/${identifier}`
+}
+
+export async function copyToClipboard(data: string) {
+  return navigator.clipboard.writeText(data)
 }
