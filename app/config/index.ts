@@ -17,8 +17,8 @@ export const CONFIG = {
     CONTACT: '/contact',
     ACCOUNT: '/account',
     API: {
-      UPLOAD: '/api/upload'
-    }
+      UPLOAD: '/api/upload',
+    },
   },
 
   FILE_TYPES: {

@@ -91,10 +91,7 @@ export function FilesUploadList({
                   size="icon"
                   className="rounded-full text-brand-primary hover:text-brand-primary"
                   onClick={() =>
-                    handleCopyToClipboard(
-                      index,
-                      uploadedFiles[index].sharelink,
-                    )
+                    handleCopyToClipboard(index, uploadedFiles[index].sharelink)
                   }
                 >
                   {copiedTimeouts.includes(index) ? (
