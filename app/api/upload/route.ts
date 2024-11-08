@@ -5,7 +5,7 @@ import { uploadFile, deleteFile } from '@/app/service'
 import sharp from 'sharp'
 import { NewImage, insertImage, isLinkExists } from '@/app/db/images'
 import { CONFIG } from '@/app/config'
-import { generateUniqueIdentifier } from '@/lib/utils'
+import { generateUniqueIdentifier, first } from '@/lib/utils'
 
 export async function POST(req: Request) {
   const header = await headers()
@@ -62,7 +62,7 @@ export async function POST(req: Request) {
     }
 
     const data = await insertImage(newImage)
-    return NextResponse.json({ sharelink: data?.share_link })
+    return NextResponse.json({ sharelink: first(data)?.share_link })
   } catch (error: unknown) {
     console.error(error)
 

@@ -11,7 +11,6 @@ import {
 } from 'drizzle-orm/pg-core'
 import { users } from '@/app/db/schema'
 import { eq } from 'drizzle-orm'
-import _ from 'lodash'
 
 export const ImageTypeEnum = pgEnum('file_type', [
   'image/jpeg',
@@ -52,7 +51,7 @@ export type NewImage = typeof images.$inferInsert
 export type ImageSelectFields = (typeof images)['_']['columns']
 
 export async function insertImage(image: NewImage) {
-  return _.first(await db.insert(images).values(image).returning())
+  return await db.insert(images).values(image).returning()
 }
 
 export async function getImageByLink(

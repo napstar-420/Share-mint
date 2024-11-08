@@ -35,3 +35,11 @@ export function createShareLink(identifier: string) {
 export async function copyToClipboard(data: string) {
   return navigator.clipboard.writeText(data)
 }
+
+export function first<T>(array: T[]) {
+  return array.length ? array[0] : undefined
+}
+
+export function isNil<T>(value: T) {
+  return value === undefined || value === null
+}

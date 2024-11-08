@@ -7,11 +7,11 @@ import {
   readableFileType,
   copyToClipboard,
   createShareLink,
+  isNil,
 } from '@/lib/utils'
 import { createThumbnail } from '@/lib/images'
 import { Loader2 } from 'lucide-react'
 import { UploadedFiles } from '@/app/upload/page'
-import _ from 'lodash'
 import { toast } from 'sonner'
 import { ImageThumbnail } from '@/components/image-thumbnail'
 
@@ -85,7 +85,7 @@ export function FilesUploadList({
                   </span>{' '}
                 </p>
               </div>
-              {!_.isUndefined(uploadedFiles[index]) ? (
+              {!isNil(uploadedFiles[index]) ? (
                 <Button
                   variant="outline"
                   size="icon"
