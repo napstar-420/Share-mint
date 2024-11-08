@@ -59,3 +59,23 @@ export async function deleteFile(fileId: string) {
   const driveService = getDriveService([DriveScopes.drive])
   return driveService.files.delete({ fileId })
 }
+
+export async function downloadFile(fileId: string) {
+  const service = getDriveService([DriveScopes.drive])
+
+  try {
+    const fileMetadata = await service.files.get({
+      fileId,
+      fields: 'name, mimeType',
+    })
+    const fileName = fileMetadata.data.name
+    const mimeType = fileMetadata.data.mimeType || 'application/octet-stream'
+    const fileStream = await service.files.get(
+      { fileId, alt: 'media' },
+      { responseType: 'stream' },
+    )
+    return { fileName, mimeType, fileStream }
+  } catch (error: unknown) {
+    throw error
+  }
+}

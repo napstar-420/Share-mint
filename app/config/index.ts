@@ -18,6 +18,7 @@ export const CONFIG = {
     ACCOUNT: '/account',
     API: {
       UPLOAD: '/api/upload',
+      DOWNLOAD: '/api/download',
     },
   },
 
