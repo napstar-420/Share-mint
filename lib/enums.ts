@@ -5,3 +5,8 @@ export const enum DriveScopes {
   metadata = 'https://www.googleapis.com/auth/drive.metadata', // View and manage metadata of files in your Drive.
   metadataReadonly = 'https://www.googleapis.com/auth/drive.metadata.readonly', // View metadata for files in your Drive.
 }
+
+export const enum UserRoles {
+  USER = 'user',
+  ADMIN = 'admin'
+}

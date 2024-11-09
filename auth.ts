@@ -11,4 +11,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     sessionsTable: sessions,
   }),
   providers: [Google],
+  callbacks: {
+    async session({ session, user }) {
+      session.user.role = user.role;
+      return session;
+    },
+  }
 })

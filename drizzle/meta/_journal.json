@@ -36,6 +36,13 @@
       "when": 1730992550173,
       "tag": "0004_easy_karnak",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1731137707485,
+      "tag": "0005_futuristic_vanisher",
+      "breakpoints": true
     }
   ]
 }

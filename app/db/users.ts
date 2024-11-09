@@ -1,4 +1,7 @@
-import { pgTable, timestamp, text } from 'drizzle-orm/pg-core'
+import { UserRoles } from '@/lib/enums'
+import { pgTable, timestamp, text, pgEnum } from 'drizzle-orm/pg-core'
+
+export const UserRoleEnum = pgEnum('user_role', [UserRoles.USER, UserRoles.ADMIN])
 
 export const users = pgTable('user', {
   id: text('id')
@@ -8,4 +11,5 @@ export const users = pgTable('user', {
   email: text('email').unique(),
   emailVerified: timestamp('emailVerified', { mode: 'date' }),
   image: text('image'),
+  role: UserRoleEnum().default(UserRoles.USER),
 })
