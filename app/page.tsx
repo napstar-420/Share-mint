@@ -1,21 +1,35 @@
 import { BackgroundGrid } from '@/components/background-grid'
-import UnderConstruction from '@/public/under-construction.svg'
-import Image from 'next/image'
+import { Button } from '@/components/ui/button'
+import { FaArrowRight } from 'react-icons/fa'
+import { CONFIG } from '@/app/config'
+import Link from 'next/link'
 
 export default function Home() {
   return (
-    <div className="h-screen absolute top-0 left-0 w-full -z-10">
+    <div>
       <BackgroundGrid />
-      <div className="grid place-items-center h-full">
-        <div className="flex flex-col items-center gap-4">
-          <Image
-            src={UnderConstruction}
-            alt="Under Construction"
-            className="w-1/2 lg:w-1/3"
-          />
-          <h1 className="text-center scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-            Coming soon!
+      <div className="min-h-[calc(100vh-120px)] grid items-center">
+        <div>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold">
+            <span>Share images like</span>
+            <br />
+            <span className="text-brand-primary">Never before</span>
           </h1>
+          <p className="my-6 text-sm max-w-md">
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nostrum
+            beatae aspernatur est pariatur reprehenderit! Debitis ratione alias
+            porro quibusdam molestias.
+          </p>
+          <Button
+            asChild
+            variant="default"
+            className="bg-brand-primary text-lg font-semibold py-7 px-8"
+          >
+            <Link href={CONFIG.ROUTE.UPLOAD}>
+              Start Uploading
+              <FaArrowRight />
+            </Link>
+          </Button>
         </div>
       </div>
     </div>

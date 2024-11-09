@@ -1,20 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { auth } from '@/auth'
+import { NextResponse } from 'next/server'
+import { UserRoles } from '@/lib/enums'
 
-export async function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl
+export default auth((req) => {
+  const user = req.auth?.user
 
-  // Exclude requests for static files, API routes, and favicon
-  if (
-    pathname.startsWith('/_next') || // Next.js static files
-    pathname.startsWith('/api') || // API routes
-    pathname === '/favicon.ico' // Favicon
-  ) {
-    return NextResponse.next()
-  }
+  const isAdminPath = req.nextUrl.pathname.startsWith('/admin')
 
-  if (pathname !== '/') {
-    return NextResponse.redirect(new URL('/', req.url))
+  if (isAdminPath && (!user || user.role !== UserRoles.ADMIN)) {
+    return NextResponse.redirect(new URL('/unauthorized', req.url))
   }
 
   return NextResponse.next()
-}
+})
