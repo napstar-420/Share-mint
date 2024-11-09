@@ -20,6 +20,11 @@ export const CONFIG = {
       UPLOAD: '/api/upload',
       DOWNLOAD: '/api/download',
     },
+    ADMIN: {
+      DASHBOARD: '/admin/dashboard',
+      IMAGES: '/admin/images',
+      USERS: '/admin/users',
+    }
   },
 
   FILE_TYPES: {
