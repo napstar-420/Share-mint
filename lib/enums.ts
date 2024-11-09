@@ -8,5 +8,5 @@ export const enum DriveScopes {
 
 export const enum UserRoles {
   USER = 'user',
-  ADMIN = 'admin'
+  ADMIN = 'admin',
 }

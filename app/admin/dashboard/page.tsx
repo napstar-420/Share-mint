@@ -1,7 +1,3 @@
 export default function Dashboard() {
-    return (
-        <div>
-            Admin dashboard
-        </div>
-    )
+  return <div>Admin dashboard</div>
 }

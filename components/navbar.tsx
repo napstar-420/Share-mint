@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { CONFIG } from '@/app/config'
 import { ToggleTheme } from '@/components/theme-toggle'
-import UserSessionMenu from './user-session-menu'
+import UserSessionMenu from '@/components/user-session-menu'
 import { auth } from '@/auth'
 
 export async function Navbar() {

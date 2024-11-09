@@ -1,7 +1,10 @@
 import { UserRoles } from '@/lib/enums'
 import { pgTable, timestamp, text, pgEnum } from 'drizzle-orm/pg-core'
 
-export const UserRoleEnum = pgEnum('user_role', [UserRoles.USER, UserRoles.ADMIN])
+export const UserRoleEnum = pgEnum('user_role', [
+  UserRoles.USER,
+  UserRoles.ADMIN,
+])
 
 export const users = pgTable('user', {
   id: text('id')
