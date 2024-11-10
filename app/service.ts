@@ -1,8 +1,9 @@
 import 'dotenv/config'
-import { google } from 'googleapis'
+import { google, type drive_v3 } from 'googleapis'
 import { GoogleAuth } from 'google-auth-library'
 import streamifier from 'streamifier'
 import { DriveScopes } from '@/lib/enums'
+import { MethodOptions } from 'googleapis/build/src/apis/abusiveexperiencereport'
 
 export const getDriveService = (scopes?: DriveScopes[]) => {
   const credentials = {
@@ -60,22 +61,27 @@ export async function deleteFile(fileId: string) {
   return driveService.files.delete({ fileId })
 }
 
-export async function downloadFile(fileId: string) {
-  const service = getDriveService([DriveScopes.drive])
+/**
+ * Retrieve a file by its ID.
+ *
+ * @param fileId The ID of the file to retrieve.
+ * @param params Optional parameters, such as the fields to include in the response.
+ * @param options Optional method options, such as the response type.
+ * @returns A Promise that resolves with the file metadata.
+ * @throws If an error occurs during the request.
+ */
+export async function getFile(
+  fileId: string,
+  params?: drive_v3.Params$Resource$Files$Get,
+  options?: MethodOptions,
+) {
+  const service = getDriveService([DriveScopes.driveReadonly])
 
   try {
-    const fileMetadata = await service.files.get({
-      fileId,
-      fields: 'name, mimeType',
-    })
-    const fileName = fileMetadata.data.name
-    const mimeType = fileMetadata.data.mimeType || 'application/octet-stream'
-    const fileStream = await service.files.get(
-      { fileId, alt: 'media' },
-      { responseType: 'stream' },
-    )
-    return { fileName, mimeType, fileStream }
-  } catch (error: unknown) {
+    const file = await service.files.get({ fileId, ...params }, options)
+
+    return file
+  } catch (error) {
     throw error
   }
 }
