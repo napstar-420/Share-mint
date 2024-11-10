@@ -12,6 +12,8 @@ const SignUp: React.FC = () => {
           <span className="text-mint">Mint</span>
         </h1>
 
+        
+
         {/* Form */}
         <form className="space-y-6">
           {/* Subheading */}
