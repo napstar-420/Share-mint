@@ -16,7 +16,7 @@ export default function UnAuthorized() {
           Access denied
         </h1>
         <p>Sorry, you&apos;re not allowed to visit this page</p>
-        <Button asChild variant="default" size="lg" className='font-bold mt-4'>
+        <Button asChild variant="default" size="lg" className="font-bold mt-4">
           <Link href={CONFIG.ROUTE.HOME}>Go back home</Link>
         </Button>
       </div>
