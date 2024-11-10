@@ -3,9 +3,10 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 interface ComponentProps {
   name: string
   image: string
+  classes?: string
 }
 
-export function UserAvatar({ name, image }: ComponentProps) {
+export function UserAvatar({ name, image, classes }: ComponentProps) {
   const altText = `${name}'s image`
   const fallbackText =
     name
@@ -15,7 +16,7 @@ export function UserAvatar({ name, image }: ComponentProps) {
       .join('') || 'You'
 
   return (
-    <Avatar className="cursor-pointer">
+    <Avatar className={classes}>
       <AvatarImage src={image || ''} alt={altText} />
       <AvatarFallback>{fallbackText}</AvatarFallback>
     </Avatar>

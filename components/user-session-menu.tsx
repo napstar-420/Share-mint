@@ -14,6 +14,7 @@ import { FaUser } from 'react-icons/fa6'
 import { UserAvatar } from '@/components/user-avatar'
 import { Session } from 'next-auth'
 import { SignOut } from '@/components/signout-button'
+import { UserRoles } from '@/lib/enums'
 
 export default function UserSessionMenu({
   session,
@@ -24,7 +25,11 @@ export default function UserSessionMenu({
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <UserAvatar name={session.user.name} image={session.user.image} />
+          <UserAvatar
+            name={session.user.name}
+            image={session.user.image}
+            classes="cursor-pointer"
+          />
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">
           <DropdownMenuLabel>Hi {session.user.name}!</DropdownMenuLabel>
@@ -38,6 +43,16 @@ export default function UserSessionMenu({
                 My images
               </Link>
             </DropdownMenuItem>
+            {session.user.role === UserRoles.ADMIN && (
+              <DropdownMenuItem className="p-0 m-0">
+                <Link
+                  href={CONFIG.ROUTE.ADMIN.DASHBOARD}
+                  className="p-2 w-full h-full hover:bg-secondary rounded-sm"
+                >
+                  Admin dashboard
+                </Link>
+              </DropdownMenuItem>
+            )}
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
