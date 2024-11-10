@@ -1,4 +1,3 @@
-import { db } from '@/app/db/connection'
 import {
   pgTable,
   varchar,
@@ -10,7 +9,6 @@ import {
   json,
 } from 'drizzle-orm/pg-core'
 import { users } from '@/app/db/schema'
-import { eq } from 'drizzle-orm'
 
 export const ImageTypeEnum = pgEnum('file_type', [
   'image/jpeg',
@@ -45,27 +43,6 @@ export const images = pgTable(
   },
 )
 
-// QUERIES
-
 export type NewImage = typeof images.$inferInsert
 export type ImageSelectFields = (typeof images)['_']['columns']
-
-export async function insertImage(image: NewImage) {
-  return await db.insert(images).values(image).returning()
-}
-
-export async function getImageByLink(
-  link: string,
-  projection?: Partial<ImageSelectFields>,
-) {
-  return db
-    .select(projection!)
-    .from(images)
-    .where(eq(images.share_link, link))
-    .limit(1)
-}
-
-export async function isLinkExists(link: string) {
-  const result = await getImageByLink(link, { id: images.id })
-  return Boolean(result.length)
-}
+export type Image = typeof images.$inferSelect

@@ -11,7 +11,7 @@ import {
 } from '@/lib/utils'
 import { createThumbnail } from '@/lib/images'
 import { Loader2 } from 'lucide-react'
-import { UploadedFiles } from '@/app/upload/page'
+import { UploadedFiles } from '@/app/(user-layout)/upload/page'
 import { toast } from 'sonner'
 import { ImageThumbnail } from '@/components/image-thumbnail'
 

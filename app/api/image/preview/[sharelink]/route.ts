@@ -1,7 +1,8 @@
-import { getImageByLink, images } from '@/app/db/images'
+import { images } from '@/app/db/images'
 import { isNil } from '@/lib/utils'
 import { NextResponse } from 'next/server'
 import { getFile } from '@/app/service'
+import { getImageByLink } from '@/app/actions'
 
 export async function GET(
   req: Request,
@@ -33,8 +34,5 @@ export async function GET(
       .concat(searchParams.get('p') as string)
   }
 
-  const response = await fetch(thumbnailLink)
-  const blob = await response.blob()
-
-  return new NextResponse(blob)
+  return NextResponse.redirect(thumbnailLink)
 }

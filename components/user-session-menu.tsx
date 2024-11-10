@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { CONFIG } from '@/app/config'
 import { FaUser } from 'react-icons/fa6'
-import UserAvatar from '@/components/user-avatar'
+import { UserAvatar } from '@/components/user-avatar'
 import { Session } from 'next-auth'
 import { SignOut } from '@/components/signout-button'
 
@@ -24,7 +24,7 @@ export default function UserSessionMenu({
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <UserAvatar session={session} />
+          <UserAvatar name={session.user.name} image={session.user.image} />
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">
           <DropdownMenuLabel>Hi {session.user.name}!</DropdownMenuLabel>

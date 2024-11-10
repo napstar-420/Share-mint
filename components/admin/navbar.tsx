@@ -18,11 +18,11 @@ export async function Navbar() {
       <h1 className="scroll-m-20 text-xl font-semibold tracking-tight text-brand-primary">
         Management
       </h1>
-      <nav className='flex-1'>
+      <nav className="flex-1">
         <ul className="flex items-center gap-4">
           {navbarLinks.map((link) => (
             <li key={link.href}>
-            <Button asChild variant="link">
+              <Button asChild variant="link">
                 <Link href={link.href} className={`hover:underline`}>
                   {link.label}
                 </Link>
@@ -31,9 +31,9 @@ export async function Navbar() {
           ))}
         </ul>
       </nav>
-        <div className="flex items-center gap-4">
-          <UserSessionMenu session={session} />
-        </div>
+      <div className="flex items-center gap-4">
+        <UserSessionMenu session={session} />
+      </div>
     </div>
   )
 }
