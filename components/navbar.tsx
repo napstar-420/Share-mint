@@ -1,10 +1,12 @@
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 import { CONFIG } from '@/app/config'
 import { ToggleTheme } from '@/components/theme-toggle'
-import { FaUser } from 'react-icons/fa6'
+import UserSessionMenu from '@/components/user-session-menu'
+import { auth } from '@/auth'
 
-export function Navbar() {
+export async function Navbar() {
+  const session = await auth()
+
   return (
     <nav className="py-10 flex items-center justify-between">
       <div className="absolute top-0 left-0 w-full bg-brand-primary h-2"></div>
@@ -16,14 +18,7 @@ export function Navbar() {
       </Link>
       <div className="flex items-center gap-2 sm:gap-4">
         <ToggleTheme />
-        {/* Desktop login button */}
-        <Button asChild className="font-bold hidden sm:block">
-          <Link href={CONFIG.ROUTE.LOGIN}>Sign in</Link>
-        </Button>
-        {/* Mobile login button */}
-        <Button size="icon" className="sm:hidden text-2xl">
-          <FaUser />
-        </Button>
+        <UserSessionMenu session={session} />
       </div>
     </nav>
   )
