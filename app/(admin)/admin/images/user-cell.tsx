@@ -1,26 +1,8 @@
-'use client'
-import { getUser } from '@/app/actions'
 import { User } from '@/app/db/users'
-import { useEffect, useState } from 'react'
 import { Loader2 } from 'lucide-react'
 import { UserAvatar } from '@/components/user-avatar'
 
-export function UserCell({ userId }: { userId: string }) {
-  const [user, setUser] = useState<User | null>(null)
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const [data] = await getUser(userId)
-        setUser(data)
-      } catch (error) {
-        console.error('Failed to fetch user:', error)
-      }
-    }
-
-    fetchUser()
-  }, [userId])
-
+export function UserCell({ user }: { user: User }) {
   return (
     <div className="font-medium">
       {user ? (

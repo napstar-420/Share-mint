@@ -3,7 +3,7 @@
 import { signOut } from '@/auth'
 import { CONFIG } from '@/app/config'
 import { db } from '@/app/db/connection'
-import { asc, count, desc, eq } from 'drizzle-orm'
+import { asc, count, desc, eq, SQL } from 'drizzle-orm'
 import { images, ImageSelectFields, NewImage } from '@/app/db/images'
 import { users } from '@/app/db/users'
 
@@ -35,15 +35,26 @@ export async function deleteImage(id: number) {
   return await db.delete(images).where(eq(images.id, id))
 }
 
-export async function getImages(
-  projection?: Partial<ImageSelectFields>,
-  limit?: number,
-  page?: number,
+interface GetImagesOptions {
+  projection?: Partial<ImageSelectFields>
+  limit?: number
+  page?: number
   orderBy?: {
     column: keyof ImageSelectFields
     order: typeof desc | typeof asc
-  },
-) {
+  }
+  where?: SQL<unknown>
+  joinUsers?: boolean
+}
+
+export async function getImages({
+  projection,
+  where,
+  limit,
+  page,
+  orderBy,
+  joinUsers = false,
+}: GetImagesOptions = {}) {
   let offset = 0
 
   if (page && limit) {
@@ -51,6 +62,10 @@ export async function getImages(
   }
 
   const query = db.select(projection!).from(images)
+
+  if (where) {
+    query.where(where)
+  }
 
   if (orderBy) {
     query.orderBy(orderBy.order(images[orderBy.column]))
@@ -64,6 +79,10 @@ export async function getImages(
 
   if (limit) {
     query.limit(limit)
+  }
+  
+  if (joinUsers) {
+    query.leftJoin(users, eq(images.uploader_id, users.id))
   }
 
   return query

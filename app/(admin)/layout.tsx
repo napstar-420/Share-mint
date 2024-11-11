@@ -17,7 +17,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <Separator orientation="vertical" className="mr-2 h-4" />
           <NavBreadcrumbs />
         </header>
-        <div className="px-4">{children}</div>
+        <div className="px-4 pb-4">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   )

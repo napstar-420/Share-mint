@@ -1,6 +1,5 @@
 'use client'
 
-import { Image } from '@/app/db/images'
 import { ColumnDef } from '@tanstack/react-table'
 import { bytesToMegaBytes } from '@/lib/utils'
 import { CONFIG } from '@/app/config'
@@ -10,8 +9,10 @@ import { ImageCell } from '@/app/(admin)/admin/images/image-cell'
 import { ArrowUpDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import { ColumnRow } from './page'
+import { User } from '@/app/db/users'
 
-export const columns: ColumnDef<Image>[] = [
+export const columns: ColumnDef<ColumnRow>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -97,11 +98,11 @@ export const columns: ColumnDef<Image>[] = [
     },
   },
   {
-    accessorKey: 'uploader_id',
+    accessorKey: 'user',
     header: 'User',
     cell: ({ row }) => {
-      const userId = row.getValue('uploader_id') as string
-      return <UserCell userId={userId} />
+      const user = row.getValue('user') as User
+      return <UserCell user={user} />
     },
   },
 ]

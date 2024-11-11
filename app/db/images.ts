@@ -32,7 +32,9 @@ export const images = pgTable(
     upload_date: timestamp('upload_date').defaultNow().notNull(),
     share_link: varchar('share_link', { length: 255 }).notNull().unique(),
     uploader_ip: varchar('uploader_ip', { length: 50 }),
-    uploader_id: text('uploader_id').references(() => users.id),
+    uploader_id: text('uploader_id').references(() => users.id, {
+      onDelete: 'cascade',
+    }),
     metadata: json().default({}),
   },
   (table) => {
