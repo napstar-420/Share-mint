@@ -5,20 +5,14 @@ import { FcOpenedFolder } from 'react-icons/fc'
 import { MdOutlineInfo } from 'react-icons/md'
 import { CONFIG } from '@/app/config'
 import { Separator } from '@/components/ui/separator'
-import {
-  useState,
-  DragEvent,
-  Dispatch,
-  SetStateAction,
-  ChangeEvent,
-} from 'react'
-import { readableFileType } from '@/lib/utils'
+import { useState, DragEvent, ChangeEvent } from 'react'
+import { bytesToMegaBytes, readableFileType } from '@/lib/utils'
 
 interface ComponentProps {
-  setFiles: Dispatch<SetStateAction<File[]>>
+  addFiles: (files: File[]) => void
 }
 
-export function UploadDropZone({ setFiles }: ComponentProps) {
+export function UploadDropZone({ addFiles }: ComponentProps) {
   const [isDragging, setIsDragging] = useState(false)
 
   const handleOnDrag = (e: DragEvent) => {
@@ -42,13 +36,13 @@ export function UploadDropZone({ setFiles }: ComponentProps) {
 
   const handleFiles = (files: FileList) => {
     if (files.length > 0) {
-      const newFiles = Array.from(files)
-      const validFiles = newFiles.filter(
+      const newFiles = Array.from(files).filter(
         (file) =>
           CONFIG.FILE_TYPES.ACCEPTED.includes(file.type) &&
           file.size <= CONFIG.MAX_FILE_SIZE,
       )
-      setFiles((prevFiles) => [...prevFiles, ...validFiles])
+
+      addFiles(newFiles)
     }
   }
 
@@ -87,7 +81,8 @@ export function UploadDropZone({ setFiles }: ComponentProps) {
           <MdOutlineInfo /> Accepted file types: {acceptedFileTypes}
         </p>
         <p className="text-sm text-muted-foreground flex items-start gap-2">
-          <MdOutlineInfo /> Max file size: {CONFIG.MAX_FILE_SIZE} mb
+          <MdOutlineInfo /> Max file size:{' '}
+          {bytesToMegaBytes(CONFIG.MAX_FILE_SIZE, true)}
         </p>
         <p className="text-sm text-muted-foreground flex items-start gap-2">
           <MdOutlineInfo /> Max images per batch: {CONFIG.MAX_FILES_PER_BATCH}
