@@ -6,7 +6,7 @@ import { UploadDropZone } from '@/components/upload-dropzone'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useEffect, useRef, useState } from 'react'
 import { CONFIG } from '@/app/config'
-import { UploadResponse } from '@/lib/type'
+import { UploadResponse } from '@/lib/types'
 
 export type UploadedFiles = Record<number, UploadResponse>
 
