@@ -3,9 +3,10 @@
 import { signOut } from '@/auth'
 import { CONFIG } from '@/app/config'
 import { db } from '@/app/db/connection'
-import { asc, count, desc, eq, SQL } from 'drizzle-orm'
+import { asc, count, desc, eq, inArray, SQL } from 'drizzle-orm'
 import { images, ImageSelectFields, NewImage } from '@/app/db/images'
 import { users } from '@/app/db/users'
+import { deleteFile } from '@/app/service'
 
 export async function logout() {
   await signOut({ redirectTo: CONFIG.ROUTE.HOME })
@@ -80,7 +81,7 @@ export async function getImages({
   if (limit) {
     query.limit(limit)
   }
-  
+
   if (joinUsers) {
     query.leftJoin(users, eq(images.uploader_id, users.id))
   }
@@ -94,4 +95,23 @@ export async function getImagesCount() {
 
 export async function getUser(id: string) {
   return await db.select().from(users).where(eq(users.id, id)).limit(1)
+}
+
+  /**
+   * Delete images from the database and Google Drive.
+   *
+   * @param {string[]} share_links - The share links of the images to delete.
+   * @returns {Promise<void>} - The promise of the operation.
+   */
+export async function deleteImages(share_links: string[]): Promise<void> {
+  const data = (await getImages({
+    projection: {
+      drive_id: images.drive_id,
+    },
+    where: inArray(images.share_link, share_links),
+  })) as { drive_id: string }[]
+
+  const drivePromises = data.map(({ drive_id }) => deleteFile(drive_id))
+  await Promise.all(drivePromises)
+  await db.delete(images).where(inArray(images.share_link, share_links))
 }

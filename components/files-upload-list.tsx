@@ -14,10 +14,12 @@ import { Loader2 } from 'lucide-react'
 import { UploadedFiles } from '@/app/(user-layout)/upload/page'
 import { toast } from 'sonner'
 import { ImageThumbnail } from '@/components/image-thumbnail'
+import { MdError } from 'react-icons/md'
 
 interface ComponentProps {
   files: File[]
   uploadQueue: number[]
+  errorQueue: number[]
   uploadedFiles: UploadedFiles
   onCancelUpload: (i: number) => void
 }
@@ -26,14 +28,11 @@ export function FilesUploadList({
   files,
   uploadQueue,
   uploadedFiles,
+  errorQueue,
   onCancelUpload,
 }: ComponentProps) {
   const [previews, setPreviews] = useState<Record<number, string>>({})
   const [copiedTimeouts, setCopiedTimeouts] = useState<number[]>([])
-
-  const isFileUploading = (index: number) => {
-    return uploadQueue.findIndex((i) => i === index) > -1 ? true : false
-  }
 
   const handleCopyToClipboard = async (index: number, identifier: string) => {
     const sharelink = createShareLink(identifier)
@@ -100,8 +99,10 @@ export function FilesUploadList({
                     <MdContentCopy />
                   )}
                 </Button>
-              ) : isFileUploading(index) ? (
+              ) : uploadQueue.includes(index) ? (
                 <Loader2 className="animate-spin" />
+              ) : errorQueue.includes(index) ? (
+                <MdError className="text-destructive text-3xl" />
               ) : (
                 <Button
                   variant="outline"
@@ -113,6 +114,11 @@ export function FilesUploadList({
                 </Button>
               )}
             </div>
+            {errorQueue.includes(index) && (
+              <p className="text-sm text-destructive mt-2">
+                Failed to upload image
+              </p>
+            )}
           </div>
         ))
       ) : (

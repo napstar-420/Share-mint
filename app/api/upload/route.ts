@@ -2,7 +2,7 @@ import { headers } from 'next/headers'
 import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { uploadFile, deleteFile } from '@/app/service'
-import sharp from 'sharp'
+import sizeOf from 'image-size';
 import { NewImage } from '@/app/db/images'
 import { CONFIG } from '@/app/config'
 import { generateUniqueIdentifier, first } from '@/lib/utils'
@@ -50,9 +50,9 @@ export async function POST(req: Request) {
     linkExists = await isLinkExists(shareLink)
   }
 
+  
   try {
-    const metadata = await sharp(buffer).metadata()
-    delete metadata.icc
+    const metadata = sizeOf(buffer);
     const newImage: NewImage = {
       drive_id: driveId,
       file_name: file.name,

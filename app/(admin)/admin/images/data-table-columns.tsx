@@ -9,10 +9,9 @@ import { ImageCell } from '@/app/(admin)/admin/images/image-cell'
 import { ArrowUpDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
-import { ColumnRow } from './page'
 import { User } from '@/app/db/users'
 
-export const columns: ColumnDef<ColumnRow>[] = [
+export const columns: ColumnDef<unknown, unknown>[] = [
   {
     id: 'select',
     header: ({ table }) => (

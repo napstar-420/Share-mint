@@ -17,6 +17,7 @@ export default function UploadPage() {
   const processedFiles = useRef<number[]>([])
   const activeImages = useRef(0)
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFiles>({})
+  const [errorQueue, setErrorQueue] = useState<number[]>([])
 
   const onCancelUpload = (index: number) => {
     setFiles(files.filter((_, i) => i !== index))
@@ -57,6 +58,7 @@ export default function UploadPage() {
       })
     } catch (error: unknown) {
       console.error(error)
+      setErrorQueue((prev) => [ ...prev, fileIndex ]);
     } finally {
       setUploadQueue((prev) => prev.filter((i) => i !== fileIndex))
       activeImages.current -= 1
@@ -75,17 +77,24 @@ export default function UploadPage() {
   }
 
   const uploadFile = async (file: File): Promise<UploadResponse> => {
-    const formData = new FormData()
-    formData.append('file', file)
-    const response = await fetch(
-      `${CONFIG.APP_URL}/${CONFIG.ROUTE.API.UPLOAD}`,
-      {
-        method: 'POST',
-        body: formData,
-      },
-    )
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      const response = await fetch(
+        `${CONFIG.APP_URL}/${CONFIG.ROUTE.API.UPLOAD}`,
+        {
+          method: 'POST',
+          body: formData,
+        },
+      )
 
-    return response.json()
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    } catch (error) {
+      throw error;
+    }
   }
 
   useEffect(() => {
@@ -118,6 +127,7 @@ export default function UploadPage() {
             uploadQueue={uploadQueue}
             uploadedFiles={uploadedFiles}
             onCancelUpload={onCancelUpload}
+            errorQueue={errorQueue}
           />
         </ScrollArea>
       </div>
