@@ -107,7 +107,7 @@ export async function getUser(id: string) {
 export async function deleteImages(share_links: string[]): Promise<void> {
   const session = await auth();
 
-  if (session?.user?.role !== UserRoles.USER) {
+  if (session?.user?.role !== UserRoles.ADMIN) {
     throw new Error('Unauthorized');
   }
 
