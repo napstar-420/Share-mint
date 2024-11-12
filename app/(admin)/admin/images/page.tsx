@@ -72,25 +72,25 @@ export default function Images() {
 
   async function handleDelete() {
     try {
-      setDeleting(true);
+      setDeleting(true)
       const selectionIndexes = Object.keys(rowSelection).map((i) => Number(i))
       const imageLinks = images
         .filter((_, index) => selectionIndexes.includes(index))
         .map((image) => image.share_link)
       await deleteImages(imageLinks)
-      await fetchImages();
-      toast('Images deleted successfully');
-      setRowSelection({});
+      await fetchImages()
+      toast('Images deleted successfully')
+      setRowSelection({})
     } catch (error) {
-      console.log(error);
-      toast('Error when deleting images');
+      console.log(error)
+      toast('Error when deleting images')
     } finally {
-      setDeleting(false);
+      setDeleting(false)
     }
   }
 
   return (
-    <div className='max-w-[100dvw]'>
+    <div className="max-w-[100dvw]">
       <div className="flex w-full overflow-x-auto items-center justify-between gap-4 py-4">
         <DataTableFilter
           placeholder="Filter images..."

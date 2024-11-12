@@ -58,7 +58,7 @@ export default function UploadPage() {
       })
     } catch (error: unknown) {
       console.error(error)
-      setErrorQueue((prev) => [ ...prev, fileIndex ]);
+      setErrorQueue((prev) => [...prev, fileIndex])
     } finally {
       setUploadQueue((prev) => prev.filter((i) => i !== fileIndex))
       activeImages.current -= 1
@@ -89,11 +89,11 @@ export default function UploadPage() {
       )
 
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error(`HTTP error! Status: ${response.status}`)
       }
-      return response.json();
+      return response.json()
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 

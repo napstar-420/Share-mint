@@ -6,9 +6,13 @@ import { DriveScopes } from '@/lib/enums'
 import { MethodOptions } from 'googleapis/build/src/apis/abusiveexperiencereport'
 
 export const getDriveService = (scopes?: DriveScopes[]) => {
-  const base64EncodedServiceAccount = process.env.BASE64_ENCODED_SERVICE_ACCOUNT!;
-  const decodedServiceAccount = Buffer.from(base64EncodedServiceAccount, 'base64').toString('utf-8');
-  const credentials = JSON.parse(decodedServiceAccount);
+  const base64EncodedServiceAccount =
+    process.env.BASE64_ENCODED_SERVICE_ACCOUNT!
+  const decodedServiceAccount = Buffer.from(
+    base64EncodedServiceAccount,
+    'base64',
+  ).toString('utf-8')
+  const credentials = JSON.parse(decodedServiceAccount)
 
   const auth = new GoogleAuth({
     credentials,
@@ -42,7 +46,7 @@ export async function uploadFile(file: File) {
 
     return response.data
   } catch (error) {
-    console.log(error);
+    console.log(error)
     throw error
   }
 }
