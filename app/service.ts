@@ -1,23 +1,14 @@
 import 'dotenv/config'
-import { google } from 'googleapis'
+import { google, type drive_v3 } from 'googleapis'
 import { GoogleAuth } from 'google-auth-library'
 import streamifier from 'streamifier'
 import { DriveScopes } from '@/lib/enums'
+import { MethodOptions } from 'googleapis/build/src/apis/abusiveexperiencereport'
 
 export const getDriveService = (scopes?: DriveScopes[]) => {
-  const credentials = {
-    type: process.env.GOOGLE_TYPE,
-    project_id: process.env.GOOGLE_PROJECT_ID,
-    private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID,
-    private_key: process.env.GOOGLE_PRIVATE_KEY!.replace(/\\n/g, '\n'),
-    client_email: process.env.GOOGLE_CLIENT_EMAIL,
-    client_id: process.env.GOOGLE_CLIENT_ID,
-    auth_uri: process.env.GOOGLE_AUTH_URI,
-    token_uri: process.env.GOOGLE_TOKEN_URI,
-    auth_provider_x509_cert_url: process.env.GOOGLE_AUTH_PROVIDER_X509_CERT_URL,
-    client_x509_cert_url: process.env.GOOGLE_CLIENT_X509_CERT_URL,
-    universe_domain: process.env.GOOGLE_UNIVERSE_DOMAIN,
-  }
+  const base64EncodedServiceAccount = process.env.BASE64_ENCODED_SERVICE_ACCOUNT!;
+  const decodedServiceAccount = Buffer.from(base64EncodedServiceAccount, 'base64').toString('utf-8');
+  const credentials = JSON.parse(decodedServiceAccount);
 
   const auth = new GoogleAuth({
     credentials,
@@ -51,6 +42,7 @@ export async function uploadFile(file: File) {
 
     return response.data
   } catch (error) {
+    console.log(error);
     throw error
   }
 }
@@ -60,22 +52,27 @@ export async function deleteFile(fileId: string) {
   return driveService.files.delete({ fileId })
 }
 
-export async function downloadFile(fileId: string) {
-  const service = getDriveService([DriveScopes.drive])
+/**
+ * Retrieve a file by its ID.
+ *
+ * @param fileId The ID of the file to retrieve.
+ * @param params Optional parameters, such as the fields to include in the response.
+ * @param options Optional method options, such as the response type.
+ * @returns A Promise that resolves with the file metadata.
+ * @throws If an error occurs during the request.
+ */
+export async function getFile(
+  fileId: string,
+  params?: drive_v3.Params$Resource$Files$Get,
+  options?: MethodOptions,
+) {
+  const service = getDriveService([DriveScopes.driveReadonly])
 
   try {
-    const fileMetadata = await service.files.get({
-      fileId,
-      fields: 'name, mimeType',
-    })
-    const fileName = fileMetadata.data.name
-    const mimeType = fileMetadata.data.mimeType || 'application/octet-stream'
-    const fileStream = await service.files.get(
-      { fileId, alt: 'media' },
-      { responseType: 'stream' },
-    )
-    return { fileName, mimeType, fileStream }
-  } catch (error: unknown) {
+    const file = await service.files.get({ fileId, ...params }, options)
+
+    return file
+  } catch (error) {
     throw error
   }
 }

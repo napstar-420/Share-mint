@@ -1,5 +1,3 @@
-import 'dotenv/config'
-
 const APP_URLS = {
   development: 'http://localhost:3000',
   production: 'https://share-mint.vercel.app',
@@ -19,6 +17,13 @@ export const CONFIG = {
     API: {
       UPLOAD: '/api/upload',
       DOWNLOAD: '/api/download',
+      IMG_PREVIEW: (sharelink: string, params?: string) =>
+        `${APP_URLS[process.env.NODE_ENV]}/api/image/preview/${sharelink}${params ? `?p=${params}` : ''}`,
+    },
+    ADMIN: {
+      DASHBOARD: '/admin/dashboard',
+      IMAGES: '/admin/images',
+      USERS: '/admin/users',
     },
   },
 
@@ -47,4 +52,9 @@ export const CONFIG = {
   },
 
   UNIQUE_IDENTIFIER_LENGTH: 8,
+
+  ADMIN_DASHBOARD: {
+    MAX_USERS_PER_PAGE: 25,
+    MAX_IMAGES_PER_PAGE: 25,
+  },
 }

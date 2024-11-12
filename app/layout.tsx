@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { Poppins } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
-import { Navbar } from '@/components/navbar'
 import { Toaster } from '@/components/ui/sonner'
 
 const poppins = Poppins({
@@ -32,18 +31,15 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={poppins.className}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-8">
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <Toaster />
-            <Navbar />
-            {children}
-          </ThemeProvider>
-        </div>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Toaster />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   )

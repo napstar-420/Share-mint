@@ -1,22 +1,23 @@
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
-import { Session } from 'next-auth'
 
 interface ComponentProps {
-  session: Session
+  name: string
+  image: string
+  classes?: string
 }
 
-export default function UserAvatar({ session }: ComponentProps) {
-  const altText = `${session.user?.name}'s image`
+export function UserAvatar({ name, image, classes }: ComponentProps) {
+  const altText = `${name}'s image`
   const fallbackText =
-    session.user?.name
+    name
       ?.split(' ')
       .slice(0, 2)
       .map((name) => name[0])
       .join('') || 'You'
 
   return (
-    <Avatar className="cursor-pointer">
-      <AvatarImage src={session.user?.image || ''} alt={altText} />
+    <Avatar className={classes}>
+      <AvatarImage src={image || ''} alt={altText} />
       <AvatarFallback>{fallbackText}</AvatarFallback>
     </Avatar>
   )
