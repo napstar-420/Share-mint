@@ -90,8 +90,8 @@ export default function Images() {
   }
 
   return (
-    <div>
-      <div className="flex items-center justify-between py-4">
+    <div className='max-w-[100dvw]'>
+      <div className="flex w-full overflow-x-auto items-center justify-between gap-4 py-4">
         <DataTableFilter
           placeholder="Filter images..."
           columnName="file_name"
