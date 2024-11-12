@@ -1,51 +1,35 @@
-
-
-import { Button } from '@/components/ui/button';
-
+import { CONFIG } from '@/app/config'
+import { signIn } from '@/auth'
+import { Button } from '@/components/ui/button'
+import { BackgroundGrid } from '@/components/background-grid'
+import { FaGoogle } from "react-icons/fa";
 
 export default function Login() {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
-      <div className="bg-card p-8 rounded-lg shadow-lg w-full max-w-md">
-        {/* Heading */}
-        <h1 className="text-3xl font-bold text-center mb-6">
-          <span className="text-primary-foreground bg-primary px-1">Upload</span>
-          <span className="text-brand-primary">Mint</span>
-        </h1>
-
-        {/* Form */}
-        <form className="space-y-6">
-          {/* Subheading */}
-          <p className="text-center text-lg">
-            <span className="text-foreground">Sign In to experience </span>
-            <span className="text-brand-primary font-semibold">ShareMint</span>
+    <div className="grid place-items-center w-full h-[100dvh] absolute top-0 left-0 -z-10 p-4">
+      <BackgroundGrid />
+      <div className="bg-background shadow-2xl px-12 py-12 rounded-3xl w-full sm:max-w-[448px] z-0">
+        <form
+          action={async () => {
+            'use server'
+            await signIn('google', { redirectTo: CONFIG.ROUTE.HOME })
+          }}
+        >
+          <h1 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+            Share<span className="text-brand-primary">mint</span>
+          </h1>
+          <h4 className="scroll-m-20 text-xl font-semibold tracking-tight mt-6">
+            Sign in
+          </h4>
+          <p className="leading-7 mt-2 text-muted-foreground">
+            to continue to <span className='font-semibold'>sharemint</span>
           </p>
-
-          {/* Checkbox */}
-          <div className="flex items-center">
-            <input
-              id="subscribe"
-              type="checkbox"
-              className="mr-2 border-border text-primary-foreground focus:ring-primary"
-            />
-            <label htmlFor="subscribe" className="text-muted-foreground">
-              Subscribe to work under our condition/terms
-            </label>
-          </div>
-
-          {/* Sign in with Google Button */}
-          <Button
-            type="button"
-            className="w-full py-2 px-4 bg-brand-primary text-primary-foreground font-semibold rounded-lg shadow-md hover:bg-chart-2 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-opacity-75"
-          >
-            Sign in with Google
+          <Button type="submit" size='lg' className="font-semibold w-full mt-4">
+            <FaGoogle />
+            Login with Google
           </Button>
         </form>
       </div>
     </div>
-  );
-};
-
-
-
-
+  )
+}
