@@ -1,12 +1,13 @@
 'use server'
 
-import { signOut } from '@/auth'
+import { auth, signOut } from '@/auth'
 import { CONFIG } from '@/app/config'
 import { db } from '@/app/db/connection'
 import { asc, count, desc, eq, inArray, SQL } from 'drizzle-orm'
 import { images, ImageSelectFields, NewImage } from '@/app/db/images'
 import { users } from '@/app/db/users'
 import { deleteFile } from '@/app/service'
+import { UserRoles } from '@/lib/enums'
 
 export async function logout() {
   await signOut({ redirectTo: CONFIG.ROUTE.HOME })
@@ -104,6 +105,12 @@ export async function getUser(id: string) {
    * @returns {Promise<void>} - The promise of the operation.
    */
 export async function deleteImages(share_links: string[]): Promise<void> {
+  const session = await auth();
+
+  if (session?.user?.role !== UserRoles.USER) {
+    throw new Error('Unauthorized');
+  }
+
   const data = (await getImages({
     projection: {
       drive_id: images.drive_id,
