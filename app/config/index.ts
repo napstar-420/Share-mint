@@ -1,5 +1,3 @@
-// import 'dotenv/config'
-
 const APP_URLS = {
   development: 'http://localhost:3000',
   production: 'https://share-mint.vercel.app',
