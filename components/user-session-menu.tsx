@@ -67,7 +67,7 @@ export default function UserSessionMenu({
     <>
       {/* Desktop login button */}
       <Button asChild className="font-bold hidden sm:block">
-        <Link href={CONFIG.ROUTE.LOGIN}>Sign in</Link>
+        <Link href={CONFIG.ROUTE.SIGN_IN}>Sign in</Link>
       </Button>
       {/* Mobile login button */}
       <Button size="icon" className="sm:hidden text-2xl">

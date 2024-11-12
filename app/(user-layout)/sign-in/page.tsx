@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { BackgroundGrid } from '@/components/background-grid'
 import { FaGoogle } from "react-icons/fa";
 
-export default function Login() {
+export default function SignIn() {
   return (
     <div className="grid place-items-center w-full h-[100dvh] absolute top-0 left-0 -z-10 p-4">
       <BackgroundGrid />
@@ -26,7 +26,7 @@ export default function Login() {
           </p>
           <Button type="submit" size='lg' className="font-semibold w-full mt-4">
             <FaGoogle />
-            Login with Google
+            Sign-in with Google
           </Button>
         </form>
       </div>
