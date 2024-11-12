@@ -1,9 +1,5 @@
 'use client'
-import {
-  ColumnDef,
-  flexRender,
-  Table as TableT,
-} from '@tanstack/react-table'
+import { ColumnDef, flexRender, Table as TableT } from '@tanstack/react-table'
 
 import {
   Table,
@@ -19,7 +15,10 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
 }
 
-export function DataTable<TData, TValue>({ table, columns }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({
+  table,
+  columns,
+}: DataTableProps<TData, TValue>) {
   return (
     <Table>
       <TableHeader>

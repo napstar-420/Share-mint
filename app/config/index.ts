@@ -8,7 +8,7 @@ export const CONFIG = {
   APP_URL: APP_URLS[process.env.NODE_ENV],
   ROUTE: {
     HOME: '/',
-    LOGIN: '/login',
+    SIGN_IN: '/sign-in',
     UPLOAD: '/upload',
     DOWNLOAD: '/d',
     ABOUT: '/about',

@@ -98,17 +98,17 @@ export async function getUser(id: string) {
   return await db.select().from(users).where(eq(users.id, id)).limit(1)
 }
 
-  /**
-   * Delete images from the database and Google Drive.
-   *
-   * @param {string[]} share_links - The share links of the images to delete.
-   * @returns {Promise<void>} - The promise of the operation.
-   */
+/**
+ * Delete images from the database and Google Drive.
+ *
+ * @param {string[]} share_links - The share links of the images to delete.
+ * @returns {Promise<void>} - The promise of the operation.
+ */
 export async function deleteImages(share_links: string[]): Promise<void> {
-  const session = await auth();
+  const session = await auth()
 
   if (session?.user?.role !== UserRoles.ADMIN) {
-    throw new Error('Unauthorized');
+    throw new Error('Unauthorized')
   }
 
   const data = (await getImages({
