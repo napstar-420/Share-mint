@@ -2,11 +2,13 @@ import { headers } from 'next/headers'
 import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { uploadFile, deleteFile } from '@/app/service'
-import sharp from 'sharp'
-import { NewImage, insertImage, isLinkExists } from '@/app/db/images'
+import sizeOf from 'image-size';
+import { NewImage } from '@/app/db/images'
 import { CONFIG } from '@/app/config'
 import { generateUniqueIdentifier, first } from '@/lib/utils'
+import { insertImage, isLinkExists } from '@/app/actions'
 
+// TODO: Move into actions
 export async function POST(req: Request) {
   const header = await headers()
   const ip = (header.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0]
@@ -48,8 +50,9 @@ export async function POST(req: Request) {
     linkExists = await isLinkExists(shareLink)
   }
 
+  
   try {
-    const metadata = await sharp(buffer).metadata()
+    const metadata = sizeOf(buffer);
     const newImage: NewImage = {
       drive_id: driveId,
       file_name: file.name,

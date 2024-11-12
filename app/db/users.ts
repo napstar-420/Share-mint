@@ -16,3 +16,5 @@ export const users = pgTable('user', {
   image: text('image'),
   role: UserRoleEnum().default(UserRoles.USER),
 })
+
+export type User = typeof users.$inferSelect
