@@ -34,5 +34,11 @@ export async function GET(
       .concat(searchParams.get('p') as string)
   }
 
-  return NextResponse.redirect(thumbnailLink)
+  const preview = await fetch(thumbnailLink, {
+    method: 'GET',
+  })
+
+  return new NextResponse(preview.body, {
+    status: preview.status,
+  })
 }

@@ -4,7 +4,6 @@ import { getFile } from '@/app/service'
 import { isNil } from '@/lib/utils'
 import { NextResponse } from 'next/server'
 
-// TODO: Move into actions
 export async function GET(
   req: Request,
   { params }: { params: Promise<{ sharelink: string }> },

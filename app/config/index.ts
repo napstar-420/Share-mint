@@ -14,11 +14,12 @@ export const CONFIG = {
     ABOUT: '/about',
     CONTACT: '/contact',
     ACCOUNT: '/account',
+    THANKS: '/thanks',
     API: {
       UPLOAD: '/api/upload',
       DOWNLOAD: '/api/download',
       IMG_PREVIEW: (sharelink: string, params?: string) =>
-        `${APP_URLS[process.env.NODE_ENV]}/api/image/preview/${sharelink}${params ? `?p=${params}` : ''}`,
+        `/api/image/preview/${sharelink}${params ? `?p=${params}` : ''}`,
     },
     ADMIN: {
       DASHBOARD: '/admin/dashboard',
