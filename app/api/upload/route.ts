@@ -85,9 +85,9 @@ export async function POST(req: Request) {
       uploader_ip: ip,
       uploader_id: session?.user?.id ?? null,
       share_link: shareLink,
-      downloadsLeft: downloadsLeft || null,
+      downloads_left: downloadsLeft || null,
       password: hashedPassword,
-      expirationTime: expirationTime
+      expiration_time: expirationTime
         ? new Date(currentTime.getTime() + expirationTime * 1000)
         : null,
     }

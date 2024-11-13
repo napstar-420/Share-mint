@@ -15,11 +15,13 @@ import {
   getSortedRowModel,
   SortingState,
   useReactTable,
+  VisibilityState,
 } from '@tanstack/react-table'
 import { DataTableFilter } from '@/components/admin/data-table-filter'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
+import { DataTableVisibility } from '@/components/admin/data-table-visibility'
 
 export interface ColumnRow extends Image {
   user: User
@@ -33,6 +35,8 @@ export default function Images() {
   const [rowSelection, setRowSelection] = React.useState({})
   const [images, setImages] = React.useState<ColumnRow[]>([])
   const [deleting, setDeleting] = React.useState(false)
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({})
 
   const table = useReactTable({
     data: images,
@@ -44,10 +48,12 @@ export default function Images() {
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onRowSelectionChange: setRowSelection,
+    onColumnVisibilityChange: setColumnVisibility,
     state: {
       sorting,
       columnFilters,
       rowSelection,
+      columnVisibility,
     },
   })
 
@@ -91,13 +97,16 @@ export default function Images() {
 
   return (
     <div className="max-w-[100dvw]">
-      <div className="flex w-full overflow-x-auto items-center justify-between gap-4 py-4">
+      <div className="sm:flex w-full overflow-x-auto items-center justify-between gap-4 py-4">
         <DataTableFilter
           placeholder="Filter images..."
           columnName="file_name"
           table={table}
         />
-        <div>
+        <div className="flex gap-4 justify-between mt-4 sm:mt-0">
+          <div>
+            <DataTableVisibility table={table} />
+          </div>
           <Button
             onClick={handleDelete}
             variant="destructive"

@@ -37,8 +37,8 @@ export const images = pgTable(
       onDelete: 'cascade',
     }),
     metadata: json().default({}),
-    downloadsLeft: integer('downloads_left'),
-    expirationTime: timestamp('expiration_time', { mode: 'date' }),
+    downloads_left: integer('downloads_left'),
+    expiration_time: timestamp('expiration_time', { mode: 'date' }),
     password: varchar('password', { length: CONFIG.PASSWORD_MAX_LENGTH }),
   },
   (table) => {

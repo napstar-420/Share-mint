@@ -3,13 +3,15 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { bytesToMegaBytes } from '@/lib/utils'
 import { CONFIG } from '@/app/config'
-import { format } from 'date-fns'
+import { format, formatDistanceToNow } from 'date-fns'
 import { UserCell } from '@/app/(admin)/admin/images/user-cell'
 import { ImageCell } from '@/app/(admin)/admin/images/image-cell'
 import { ArrowUpDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { User } from '@/app/db/users'
+import { FcCancel } from 'react-icons/fc'
+import { FaLock } from 'react-icons/fa6'
 
 export const columns: ColumnDef<unknown, unknown>[] = [
   {
@@ -94,6 +96,68 @@ export const columns: ColumnDef<unknown, unknown>[] = [
       const date = row.getValue('upload_date') as string
       const formattedDate = format(new Date(date), 'MMM dd, yyyy')
       return <div>{formattedDate}</div>
+    },
+  },
+  {
+    accessorKey: 'downloads_left',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Downloads left
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    cell: ({ row }) => {
+      const downloadsLeft = row.getValue('downloads_left') as number
+      return <div>{downloadsLeft || 'Unlimited'}</div>
+    },
+  },
+  {
+    accessorKey: 'expiration_time',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Expires in
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    cell: ({ row }) => {
+      const expirationDate = row.getValue('expiration_time') as string
+      const timeLeft = formatDistanceToNow(new Date(expirationDate), {
+        addSuffix: true,
+      })
+
+      return <div>{expirationDate ? timeLeft : 'Never'}</div>
+    },
+  },
+  {
+    accessorKey: 'password',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Protected
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    cell: ({ row }) => {
+      const password = row.getValue('password') as string
+      return (
+        <div className="text-xl mx-auto w-max">
+          {password ? <FaLock /> : <FcCancel />}
+        </div>
+      )
     },
   },
   {

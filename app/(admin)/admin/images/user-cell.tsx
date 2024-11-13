@@ -6,7 +6,7 @@ export function UserCell({ user }: { user: User }) {
   return (
     <div className="font-medium">
       {user ? (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 text-left">
           <UserAvatar name={user.name!} image={user.image!} />
           <div className="flex flex-col flex-wrap w-full">
             <div className="font-medium">{user.name}</div>
