@@ -9,6 +9,7 @@ import {
   json,
 } from 'drizzle-orm/pg-core'
 import { users } from '@/app/db/schema'
+import { CONFIG } from '@/app/config'
 
 export const ImageTypeEnum = pgEnum('file_type', [
   'image/jpeg',
@@ -36,6 +37,9 @@ export const images = pgTable(
       onDelete: 'cascade',
     }),
     metadata: json().default({}),
+    downloadsLeft: integer('downloads_left'),
+    expirationTime: timestamp('expiration_time', { mode: 'date' }),
+    password: varchar('password', { length: CONFIG.PASSWORD_MAX_LENGTH }),
   },
   (table) => {
     return {

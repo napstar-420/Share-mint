@@ -13,6 +13,10 @@ export async function logout() {
   await signOut({ redirectTo: CONFIG.ROUTE.HOME })
 }
 
+export async function getSession() {
+  return await auth()
+}
+
 export async function insertImage(image: NewImage) {
   return await db.insert(images).values(image).returning()
 }

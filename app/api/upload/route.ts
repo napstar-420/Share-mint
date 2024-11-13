@@ -5,26 +5,49 @@ import { uploadFile, deleteFile } from '@/app/service'
 import sizeOf from 'image-size'
 import { NewImage } from '@/app/db/images'
 import { CONFIG } from '@/app/config'
-import { generateUniqueIdentifier, first } from '@/lib/utils'
+import { generateUniqueIdentifier, first, isNil } from '@/lib/utils'
 import { insertImage, isLinkExists } from '@/app/actions'
+import { UploadSchema } from '@/app/(user-layout)/upload/schema'
+import bcrypt from 'bcryptjs'
 
-// TODO: Move into actions
 export async function POST(req: Request) {
   const header = await headers()
   const ip = (header.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0]
   const session = await auth()
   const formData = await req.formData()
-  const file = formData.get('file') as File
 
-  if (!file) {
-    return NextResponse.json({ error: 'File not found' }, { status: 400 })
+  let parsedData
+
+  try {
+    parsedData = UploadSchema.parse({
+      file: formData.get('file'),
+      password: formData.get('password'),
+      downloadsLeft: Number(formData.get('downloadsLeft')),
+      expirationTime: Number(formData.get('expirationTime')),
+    })
+  } catch (error: unknown) {
+    return NextResponse.json({ error }, { status: 400 })
   }
+
+  const { file, password, downloadsLeft, expirationTime } = parsedData
+  const hashedPassword = password ? bcrypt.hashSync(password, 10) : null
 
   if (!CONFIG.FILE_TYPES.ACCEPTED.includes(file.type)) {
     NextResponse.json(
       { error: `Accepted file types are ${CONFIG.FILE_TYPES.ACCEPTED.join()}` },
       { status: 400 },
     )
+  }
+
+  if (file.size > CONFIG.MAX_FILE_SIZE) {
+    return NextResponse.json(
+      { error: `File size limit is ${CONFIG.MAX_FILE_SIZE}` },
+      { status: 400 },
+    )
+  }
+
+  if ((downloadsLeft === 0 || expirationTime === 0) && isNil(session?.user)) {
+    return NextResponse.json({ error: 'Login required' }, { status: 401 })
   }
 
   const arrayBuffer = await file.arrayBuffer()
@@ -51,6 +74,7 @@ export async function POST(req: Request) {
   }
 
   try {
+    const currentTime = new Date()
     const metadata = sizeOf(buffer)
     const newImage: NewImage = {
       drive_id: driveId,
@@ -61,6 +85,11 @@ export async function POST(req: Request) {
       uploader_ip: ip,
       uploader_id: session?.user?.id ?? null,
       share_link: shareLink,
+      downloadsLeft: downloadsLeft || null,
+      password: hashedPassword,
+      expirationTime: expirationTime
+        ? new Date(currentTime.getTime() + expirationTime * 1000)
+        : null,
     }
 
     const data = await insertImage(newImage)

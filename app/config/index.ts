@@ -57,4 +57,52 @@ export const CONFIG = {
     MAX_USERS_PER_PAGE: 25,
     MAX_IMAGES_PER_PAGE: 25,
   },
+
+  EXPIRATION_OPTIONS: [
+    {
+      value: 60 * 5,
+      label: '5 minutes',
+    },
+    {
+      value: 60 * 60,
+      label: '1 hour',
+    },
+    {
+      value: 60 * 60 * 24,
+      label: '1 day',
+    },
+    {
+      value: 60 * 60 * 24 * 3,
+      label: '3 days',
+    },
+    {
+      value: 60 * 60 * 24 * 7,
+      label: '1 week',
+    },
+  ],
+
+  DOWNLOAD_OPTIONS: [
+    {
+      value: 1,
+      label: '1 download',
+    },
+    {
+      value: 2,
+      label: '2 downloads',
+    },
+    {
+      value: 3,
+      label: '3 downloads',
+    },
+    {
+      value: 4,
+      label: '4 downloads',
+    },
+    {
+      value: 5,
+      label: '5 downloads',
+    },
+  ],
+
+  PASSWORD_MAX_LENGTH: 64,
 }

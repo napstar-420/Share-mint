@@ -7,6 +7,14 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { useEffect, useRef, useState } from 'react'
 import { CONFIG } from '@/app/config'
 import { UploadResponse } from '@/lib/types'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { toast } from 'sonner'
+import { ExpirationOptions } from '@/components/expiration-options'
+import { DownloadOptions } from '@/components/download-options'
+import { UploadSchema } from '@/app/(user-layout)/upload/schema'
+import { Button } from '@/components/ui/button'
 
 export type UploadedFiles = Record<number, UploadResponse>
 
@@ -18,6 +26,15 @@ export default function UploadPage() {
   const activeImages = useRef(0)
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFiles>({})
   const [errorQueue, setErrorQueue] = useState<number[]>([])
+  const [downloadsLeft, setDownloadsLeft] = useState(
+    CONFIG.DOWNLOAD_OPTIONS[0].value,
+  )
+  const [expirationTime, setExpirationTime] = useState(
+    CONFIG.EXPIRATION_OPTIONS[0].value,
+  )
+  const [password, setPassword] = useState('')
+  const [isPrivate, setIsPrivate] = useState(false)
+  const passwordRef = useRef<HTMLInputElement>(null)
 
   const onCancelUpload = (index: number) => {
     setFiles(files.filter((_, i) => i !== index))
@@ -35,6 +52,18 @@ export default function UploadPage() {
     )
 
     if (filesToAdd.length <= 0) {
+      return
+    }
+
+    if (isPrivate && !password) {
+      toast('Password required', {
+        description: 'Please enter a password or disable password protection',
+        action: {
+          label: 'Type password',
+          onClick: () => passwordRef.current?.focus(),
+        },
+      })
+      passwordRef.current?.focus()
       return
     }
 
@@ -78,8 +107,19 @@ export default function UploadPage() {
 
   const uploadFile = async (file: File): Promise<UploadResponse> => {
     try {
+      const parsedData = UploadSchema.parse({
+        file,
+        password: isPrivate ? password.trim() : '',
+        downloadsLeft,
+        expirationTime,
+      })
+
       const formData = new FormData()
-      formData.append('file', file)
+      formData.append('file', parsedData.file)
+      formData.append('password', parsedData.password || '')
+      formData.append('downloadsLeft', parsedData.downloadsLeft.toString())
+      formData.append('expirationTime', parsedData.expirationTime.toString())
+
       const response = await fetch(
         `${CONFIG.APP_URL}/${CONFIG.ROUTE.API.UPLOAD}`,
         {
@@ -95,6 +135,17 @@ export default function UploadPage() {
     } catch (error) {
       throw error
     }
+  }
+
+  const reset = () => {
+    const prevIsPrivate = isPrivate
+    setFiles([])
+    setUploadQueue([])
+    processedFiles.current = []
+    activeImages.current = 0
+    setUploadedFiles({})
+    setErrorQueue([])
+    setIsPrivate(prevIsPrivate)
   }
 
   useEffect(() => {
@@ -113,9 +164,62 @@ export default function UploadPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [files])
 
+  useEffect(() => {
+    if (isPrivate) {
+      passwordRef.current?.focus()
+    }
+  }, [isPrivate])
+
   return (
-    <div className="py-8">
-      <div className="grid lg:grid-cols-[3fr_auto_2fr] xl:grid-cols-[2fr_auto_1fr] gap-2 items-start max-w-lg mx-auto lg:max-w-none lg:mx-0">
+    <form className="py-8" onSubmit={(e) => e.preventDefault()}>
+      <div className="flex items-center mb-4 gap-2 flex-wrap">
+        <span>Expire after</span>
+        <DownloadOptions
+          downloadsLeft={downloadsLeft}
+          setDownloadsLeft={setDownloadsLeft}
+          disabled={Boolean(files.length)}
+        />
+        <span>or</span>
+        <ExpirationOptions
+          expirationTime={expirationTime}
+          setExpirationTime={setExpirationTime}
+          disabled={Boolean(files.length)}
+        />
+      </div>
+
+      <div className="flex items-center flex-wrap mb-4 gap-2">
+        <Checkbox
+          id="private"
+          disabled={Boolean(files.length)}
+          checked={isPrivate}
+          onClick={() => setIsPrivate((prev) => !prev)}
+        />
+        <Label htmlFor="private">Protect with password</Label>
+        <Input
+          type="password"
+          ref={passwordRef}
+          placeholder="Password"
+          className="w-full max-w-xs"
+          value={password}
+          disabled={!isPrivate || Boolean(files.length)}
+          onChange={(e) => setPassword(e.target.value)}
+          maxLength={CONFIG.PASSWORD_MAX_LENGTH}
+          autoComplete="new-password"
+        />
+
+        <div className="ml-auto">
+          <Button
+            type="reset"
+            variant="outline"
+            onClick={reset}
+            disabled={Boolean(uploadQueue.length)}
+          >
+            Clear all
+          </Button>
+        </div>
+      </div>
+
+      <div className="grid p-2 rounded-2xl border-2 border-dashed lg:grid-cols-[3fr_auto_2fr] xl:grid-cols-[2fr_auto_1fr] gap-2 items-start max-w-lg mx-auto lg:max-w-none lg:mx-0">
         <UploadDropZone addFiles={onAddFiles} />
 
         <Separator orientation="vertical" className="hidden lg:block" />
@@ -131,6 +235,6 @@ export default function UploadPage() {
           />
         </ScrollArea>
       </div>
-    </div>
+    </form>
   )
 }

@@ -5,7 +5,7 @@ import { FcOpenedFolder } from 'react-icons/fc'
 import { MdOutlineInfo } from 'react-icons/md'
 import { CONFIG } from '@/app/config'
 import { Separator } from '@/components/ui/separator'
-import { useState, DragEvent, ChangeEvent } from 'react'
+import { useState, DragEvent, ChangeEvent, useEffect, useRef } from 'react'
 import { bytesToMegaBytes, readableFileType } from '@/lib/utils'
 
 interface ComponentProps {
@@ -14,10 +14,14 @@ interface ComponentProps {
 
 export function UploadDropZone({ addFiles }: ComponentProps) {
   const [isDragging, setIsDragging] = useState(false)
+  const dropzone = useRef<HTMLDivElement>(null)
 
   const handleOnDrag = (e: DragEvent) => {
     e.preventDefault()
-    setIsDragging(true)
+    const target = e.target as Element
+    setIsDragging(
+      Boolean(target.id === 'dropzone' || dropzone.current?.contains(target)),
+    )
   }
 
   const handleOnDrop = (e: DragEvent) => {
@@ -53,11 +57,26 @@ export function UploadDropZone({ addFiles }: ComponentProps) {
     .toString()
     .replaceAll(',', ', ')
 
+  useEffect(() => {
+    document.body.addEventListener(
+      'dragover',
+      handleOnDrag as unknown as EventListener,
+    )
+
+    // Cleanup
+    return () => {
+      document.body.removeEventListener(
+        'dragover',
+        handleOnDrag as unknown as EventListener,
+      )
+    }
+  }, [])
+
   return (
     <div
-      className={`py-12 px-4 rounded-xl flex flex-col items-center ${isDragging ? 'bg-brand-primary' : 'bg-primary-foreground'}`}
-      onDragOver={handleOnDrag}
-      onDragLeave={() => setIsDragging(false)}
+      id="dropzone"
+      ref={dropzone}
+      className={`py-12 px-4 rounded-xl flex flex-col items-center ${isDragging ? 'bg-brand-primary' : ''}`}
       onDrop={handleOnDrop}
     >
       <FcOpenedFolder className="text-6xl my-4" />

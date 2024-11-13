@@ -60,7 +60,7 @@ export function FilesUploadList({
   }, [files])
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 h-full">
       {files.length ? (
         files.map((file, index) => (
           <div
@@ -122,8 +122,8 @@ export function FilesUploadList({
           </div>
         ))
       ) : (
-        <div className="flex flex-col items-center justify-center py-6">
-          <FaImages className="text-8xl text-primary-foreground" />
+        <div className="flex flex-col items-center justify-center py-6 flex-auto h-full">
+          <FaImages className="text-8xl text-secondary-foreground" />
           <p className="text-lg font-semibold text-muted-foreground text-center">
             Uploaded images will appear here
           </p>
