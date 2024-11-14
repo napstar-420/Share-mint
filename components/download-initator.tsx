@@ -1,5 +1,5 @@
 'use client'
-import { redirect } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { LuDownload } from 'react-icons/lu'
 import { useState } from 'react'
@@ -13,6 +13,7 @@ interface ComponentProps {
 
 export function DownloadInitiator({ downloadUrl, file_name }: ComponentProps) {
   const [loading, setLoading] = useState(false)
+  const router = useRouter()
 
   const initDownload = async () => {
     try {
@@ -31,7 +32,7 @@ export function DownloadInitiator({ downloadUrl, file_name }: ComponentProps) {
       // Clean up the Blob URL
       URL.revokeObjectURL(link.href)
 
-      redirect(CONFIG.ROUTE.THANKS)
+      router.push(CONFIG.ROUTE.THANKS)
     } catch {
       toast('Error downloading file', {
         description: 'Please try again later.',

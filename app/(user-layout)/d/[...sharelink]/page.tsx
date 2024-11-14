@@ -5,6 +5,9 @@ import { DownloadInitiator } from '@/components/download-initator'
 import { ImageThumbnail } from '@/components/image-thumbnail'
 import { bytesToMegaBytes } from '@/lib/utils'
 import { notFound } from 'next/navigation'
+import { UnlockFile } from '@/components/unlock-file'
+import { cookies } from 'next/headers'
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 interface ComponentProps {
   params: Promise<{ sharelink: string[] }>
@@ -12,6 +15,7 @@ interface ComponentProps {
 
 export default async function DownloadPage({ params }: ComponentProps) {
   const sharelink = (await params).sharelink[0]
+  const cookieStore = await cookies();
 
   if (!(await isLinkExists(sharelink))) {
     return notFound()
@@ -20,7 +24,23 @@ export default async function DownloadPage({ params }: ComponentProps) {
   const [image] = await getImageByLink(sharelink, {
     file_name: images.file_name,
     file_size: images.file_size,
+    password: images.password,
   })
+
+  const isPrivate = image.password;
+  let hasAccess = false;
+
+  if (isPrivate) {
+    const token = cookieStore.get('token');
+
+    if (token?.value) {
+      const decoded = jwt.verify(token.value, process.env.JWT_SECRET!) as JwtPayload;
+      
+      if (decoded.sharelink === sharelink) {
+        hasAccess = true;
+      }
+    }
+  }
 
   const downloadUrl = `${CONFIG.APP_URL}${CONFIG.ROUTE.API.DOWNLOAD}/${sharelink}`
   const previewLink = `${CONFIG.APP_URL}${CONFIG.ROUTE.API.IMG_PREVIEW(sharelink, 's220')}`
@@ -38,22 +58,28 @@ export default async function DownloadPage({ params }: ComponentProps) {
             encryption and a link that automatically expires.
           </p>
 
-          <div className="mx-auto border-2 flex gap-3 mt-8 p-2 rounded-md">
-            <ImageThumbnail src={previewLink} />
-            <div>
-              <h4 className="text-lg font-semibold tracking-tight">
-                {image.file_name}
-              </h4>
-              <small className="text-sm font-medium leading-none">
-                {bytesToMegaBytes(image.file_size!, true)}
-              </small>
-            </div>
-          </div>
+          {!hasAccess ? (
+            <UnlockFile sharelink={sharelink} />
+          ) : (
+            <>
+              <div className="mx-auto border-2 flex gap-3 mt-8 p-2 rounded-md">
+                <ImageThumbnail src={previewLink} />
+                <div>
+                  <h4 className="text-lg font-semibold tracking-tight">
+                    {image.file_name}
+                  </h4>
+                  <small className="text-sm font-medium leading-none">
+                    {bytesToMegaBytes(image.file_size!, true)}
+                  </small>
+                </div>
+              </div>
 
-          <DownloadInitiator
-            downloadUrl={downloadUrl}
-            file_name={image.file_name!}
-          />
+              <DownloadInitiator
+                downloadUrl={downloadUrl}
+                file_name={image.file_name!}
+              />
+            </>
+          )}
         </div>
       </div>
     </div>

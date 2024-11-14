@@ -8,6 +8,11 @@ import { images, ImageSelectFields, NewImage } from '@/app/db/images'
 import { users } from '@/app/db/users'
 import { deleteFile } from '@/app/service'
 import { UserRoles } from '@/lib/enums'
+import bcrypt from 'bcryptjs'
+import { isNil } from '@/lib/utils'
+import jwt from 'jsonwebtoken'
+import { z } from 'zod'
+import { cookies } from 'next/headers'
 
 export async function logout() {
   await signOut({ redirectTo: CONFIG.ROUTE.HOME })
@@ -125,4 +130,53 @@ export async function deleteImages(share_links: string[]): Promise<void> {
   const drivePromises = data.map(({ drive_id }) => deleteFile(drive_id))
   await Promise.all(drivePromises)
   await db.delete(images).where(inArray(images.share_link, share_links))
+}
+
+const PasswordSchema = z.object({
+  password: z.string(),
+  sharelink: z.string(),
+})
+
+export async function verifyPassword(prevState: string, formData: FormData) {
+  const password = formData.get('password') as string
+  const sharelink = formData.get('sharelink') as string
+  const parsedData = PasswordSchema.safeParse({
+    password,
+    sharelink,
+  })
+
+  if (!parsedData.success) {
+    return 'Please enter password'
+  }
+
+  const [image] = await getImageByLink(sharelink, {
+    password: images.password,
+  });
+
+  if (isNil(image)) {
+    return 'Could not find the requested image'
+  }
+
+  if (isNil(image.password)) {
+    return 'requested image has no password'
+  }
+
+  const isPasswordCorrect = bcrypt.compareSync(password, image.password!);
+
+  if (!isPasswordCorrect) {
+    return 'The password you entered is incorrect'
+  }
+
+  const cookieStore = await cookies()
+
+  const token = jwt.sign({ sharelink }, process.env.JWT_SECRET!, { expiresIn: '15m' });
+
+  cookieStore.set('token', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 15 * 60, // 15 minutes
+  });
+
+  return '';
 }
