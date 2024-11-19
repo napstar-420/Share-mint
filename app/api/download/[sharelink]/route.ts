@@ -1,4 +1,8 @@
-import { getImageByLink } from '@/app/actions'
+import {
+  deleteImages,
+  getImageByLink,
+  updateDownloadsLeft,
+} from '@/app/actions'
 import { images } from '@/app/db/images'
 import { getFile } from '@/app/service'
 import { isNil } from '@/lib/utils'
@@ -11,7 +15,7 @@ export async function GET(
   { params }: { params: Promise<{ sharelink: string }> },
 ) {
   const { sharelink } = await params
-  const cookieStore = await cookies();
+  const cookieStore = await cookies()
 
   if (typeof sharelink !== 'string') {
     return NextResponse.json({ message: 'Invalid link' }, { status: 400 })
@@ -31,19 +35,25 @@ export async function GET(
       return NextResponse.json({ message: 'File not found' }, { status: 404 })
     }
 
-    const isPrivate = image.password;
+    const isPrivate = image.password
 
     if (isPrivate) {
-      const token = cookieStore.get('token');
+      const token = cookieStore.get('token')
 
       if (!token?.value) {
-        return NextResponse.json({ message: 'Token is required' }, { status: 401 });
+        return NextResponse.json(
+          { message: 'Token is required' },
+          { status: 401 },
+        )
       }
 
-      const decoded = jwt.verify(token.value, process.env.JWT_SECRET!) as JwtPayload;
+      const decoded = jwt.verify(
+        token.value,
+        process.env.JWT_SECRET!,
+      ) as JwtPayload
 
       if (decoded.sharelink !== sharelink) {
-        return NextResponse.json({ message: 'Invalid Token' }, { status: 403 });
+        return NextResponse.json({ message: 'Invalid Token' }, { status: 403 })
       }
     }
 
@@ -58,6 +68,17 @@ export async function GET(
       'Content-Disposition',
       `attachment; filename="${image.file_name}"`,
     )
+
+    let newDownloadsLeft: number | null
+
+    if (image.downloads_left !== null) {
+      newDownloadsLeft = image.downloads_left! - 1
+      await updateDownloadsLeft(sharelink, newDownloadsLeft)
+
+      if (newDownloadsLeft === 0) {
+        await deleteImages([sharelink], process.env.APP_KEY!)
+      }
+    }
 
     return new Response(fileStream.data as unknown as null, {
       status: 200,

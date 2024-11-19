@@ -7,7 +7,7 @@ import { bytesToMegaBytes } from '@/lib/utils'
 import { notFound } from 'next/navigation'
 import { UnlockFile } from '@/components/unlock-file'
 import { cookies } from 'next/headers'
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken'
 
 interface ComponentProps {
   params: Promise<{ sharelink: string[] }>
@@ -15,7 +15,7 @@ interface ComponentProps {
 
 export default async function DownloadPage({ params }: ComponentProps) {
   const sharelink = (await params).sharelink[0]
-  const cookieStore = await cookies();
+  const cookieStore = await cookies()
 
   if (!(await isLinkExists(sharelink))) {
     return notFound()
@@ -27,17 +27,20 @@ export default async function DownloadPage({ params }: ComponentProps) {
     password: images.password,
   })
 
-  const isPrivate = image.password;
-  let hasAccess = false;
+  const isPrivate = image.password
+  let hasAccess = isPrivate ? false : true
 
   if (isPrivate) {
-    const token = cookieStore.get('token');
+    const token = cookieStore.get('token')
 
     if (token?.value) {
-      const decoded = jwt.verify(token.value, process.env.JWT_SECRET!) as JwtPayload;
-      
+      const decoded = jwt.verify(
+        token.value,
+        process.env.JWT_SECRET!,
+      ) as JwtPayload
+
       if (decoded.sharelink === sharelink) {
-        hasAccess = true;
+        hasAccess = true
       }
     }
   }

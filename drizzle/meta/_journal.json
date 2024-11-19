@@ -43,6 +43,13 @@
       "when": 1731137707485,
       "tag": "0005_futuristic_vanisher",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1732042710983,
+      "tag": "0006_crazy_famine",
+      "breakpoints": true
     }
   ]
 }

@@ -20,7 +20,7 @@ export function UnlockFile({ sharelink }: ComponentProps) {
           <input type="hidden" name="sharelink" value={sharelink} />
           <Input
             type="password"
-            name='password'
+            name="password"
             placeholder="Password"
             className="bg-background"
           />
@@ -32,7 +32,9 @@ export function UnlockFile({ sharelink }: ComponentProps) {
             Unlock <FaUnlockAlt />
           </Button>
         </div>
-        <p aria-live="polite" className="text-sm text-destructive mt-1 ml-1">{message}</p>
+        <p aria-live="polite" className="text-sm text-destructive mt-1 ml-1">
+          {message}
+        </p>
       </form>
     </div>
   )

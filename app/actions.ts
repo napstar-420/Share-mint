@@ -113,10 +113,16 @@ export async function getUser(id: string) {
  * @param {string[]} share_links - The share links of the images to delete.
  * @returns {Promise<void>} - The promise of the operation.
  */
-export async function deleteImages(share_links: string[]): Promise<void> {
+export async function deleteImages(
+  share_links: string[],
+  APP_KEY: string,
+): Promise<void> {
   const session = await auth()
 
-  if (session?.user?.role !== UserRoles.ADMIN) {
+  if (
+    session?.user?.role !== UserRoles.ADMIN ||
+    APP_KEY !== process.env.APP_KEY
+  ) {
     throw new Error('Unauthorized')
   }
 
@@ -137,7 +143,7 @@ const PasswordSchema = z.object({
   sharelink: z.string(),
 })
 
-export async function verifyPassword(prevState: string, formData: FormData) {
+export async function verifyPassword(prevState: unknown, formData: FormData) {
   const password = formData.get('password') as string
   const sharelink = formData.get('sharelink') as string
   const parsedData = PasswordSchema.safeParse({
@@ -151,7 +157,7 @@ export async function verifyPassword(prevState: string, formData: FormData) {
 
   const [image] = await getImageByLink(sharelink, {
     password: images.password,
-  });
+  })
 
   if (isNil(image)) {
     return 'Could not find the requested image'
@@ -161,7 +167,7 @@ export async function verifyPassword(prevState: string, formData: FormData) {
     return 'requested image has no password'
   }
 
-  const isPasswordCorrect = bcrypt.compareSync(password, image.password!);
+  const isPasswordCorrect = bcrypt.compareSync(password, image.password!)
 
   if (!isPasswordCorrect) {
     return 'The password you entered is incorrect'
@@ -169,14 +175,26 @@ export async function verifyPassword(prevState: string, formData: FormData) {
 
   const cookieStore = await cookies()
 
-  const token = jwt.sign({ sharelink }, process.env.JWT_SECRET!, { expiresIn: '15m' });
+  const token = jwt.sign({ sharelink }, process.env.JWT_SECRET!, {
+    expiresIn: '15m',
+  })
 
   cookieStore.set('token', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     maxAge: 15 * 60, // 15 minutes
-  });
+  })
 
-  return '';
+  return ''
+}
+
+export async function updateDownloadsLeft(
+  sharelink: string,
+  newValue: number | null,
+) {
+  return await db
+    .update(images)
+    .set({ downloads_left: newValue })
+    .where(eq(images.share_link, sharelink))
 }

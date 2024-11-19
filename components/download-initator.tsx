@@ -32,7 +32,7 @@ export function DownloadInitiator({ downloadUrl, file_name }: ComponentProps) {
       // Clean up the Blob URL
       URL.revokeObjectURL(link.href)
 
-      router.push(CONFIG.ROUTE.THANKS)
+      router.replace(CONFIG.ROUTE.THANKS)
     } catch {
       toast('Error downloading file', {
         description: 'Please try again later.',
