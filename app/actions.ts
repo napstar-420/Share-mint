@@ -120,22 +120,23 @@ export async function deleteImages(
   const session = await auth()
 
   if (
-    session?.user?.role !== UserRoles.ADMIN ||
-    APP_KEY !== process.env.APP_KEY
+    session?.user?.role === UserRoles.ADMIN ||
+    APP_KEY === process.env.APP_KEY
   ) {
+    const data = (await getImages({
+      projection: {
+        drive_id: images.drive_id,
+      },
+      where: inArray(images.share_link, share_links),
+    })) as { drive_id: string }[]
+
+    const drivePromises = data.map(({ drive_id }) => deleteFile(drive_id))
+    await Promise.all(drivePromises)
+    await db.delete(images).where(inArray(images.share_link, share_links))
+    return;
+  } else {
     throw new Error('Unauthorized')
   }
-
-  const data = (await getImages({
-    projection: {
-      drive_id: images.drive_id,
-    },
-    where: inArray(images.share_link, share_links),
-  })) as { drive_id: string }[]
-
-  const drivePromises = data.map(({ drive_id }) => deleteFile(drive_id))
-  await Promise.all(drivePromises)
-  await db.delete(images).where(inArray(images.share_link, share_links))
 }
 
 const PasswordSchema = z.object({
