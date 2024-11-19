@@ -7,7 +7,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
-import { Home, ImageIcon, LayoutDashboard, UserCircle2Icon } from 'lucide-react'
+import { Home, ImageIcon, LayoutDashboard } from 'lucide-react'
 import { CONFIG } from '@/app/config'
 
 const items = [
@@ -25,11 +25,6 @@ const items = [
     title: 'Images',
     url: CONFIG.ROUTE.ADMIN.IMAGES,
     icon: ImageIcon,
-  },
-  {
-    title: 'Users',
-    url: CONFIG.ROUTE.ADMIN.USERS,
-    icon: UserCircle2Icon,
   },
 ]
 

@@ -97,7 +97,7 @@ export default function Images() {
 
   return (
     <div className="max-w-[100dvw]">
-      <div className="sm:flex w-full overflow-x-auto items-center justify-between gap-4 py-4">
+      <div className="sm:flex w-full overflow-x-auto items-center justify-between gap-4 pb-4">
         <DataTableFilter
           placeholder="Filter images..."
           columnName="file_name"
