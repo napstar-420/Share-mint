@@ -3,7 +3,19 @@
 import { auth, signOut } from '@/auth'
 import { CONFIG } from '@/app/config'
 import { db } from '@/app/db/connection'
-import { asc, count, desc, eq, inArray, SQL } from 'drizzle-orm'
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  gt,
+  inArray,
+  isNull,
+  or,
+  SQL,
+  SQLWrapper,
+} from 'drizzle-orm'
 import { images, ImageSelectFields, NewImage } from '@/app/db/images'
 import { users } from '@/app/db/users'
 import { deleteFile } from '@/app/service'
@@ -29,12 +41,19 @@ export async function insertImage(image: NewImage) {
 export async function getImageByLink(
   link: string,
   projection?: Partial<ImageSelectFields>,
+  notExpired = true,
 ) {
-  return db
-    .select(projection!)
-    .from(images)
-    .where(eq(images.share_link, link))
-    .limit(1)
+  const baseQuery = db.select(projection!).from(images)
+  const conditions: unknown[] = [eq(images.share_link, link)]
+  if (notExpired) {
+    conditions.push(
+      or(gt(images.expiration_time, new Date()), isNull(images.expiration_time)),
+      or(gt(images.downloads_left, 0), isNull(images.downloads_left)),
+    )
+  }
+
+  const query = baseQuery.where(and(...(conditions as SQLWrapper[]))).limit(1)
+  return await query
 }
 
 export async function isLinkExists(link: string) {
@@ -133,7 +152,7 @@ export async function deleteImages(
     const drivePromises = data.map(({ drive_id }) => deleteFile(drive_id))
     await Promise.all(drivePromises)
     await db.delete(images).where(inArray(images.share_link, share_links))
-    return;
+    return
   } else {
     throw new Error('Unauthorized')
   }

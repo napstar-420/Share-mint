@@ -1,9 +1,9 @@
-import { getImageByLink, isLinkExists } from '@/app/actions'
+import { getImageByLink } from '@/app/actions'
 import { CONFIG } from '@/app/config'
 import { images } from '@/app/db/images'
 import { DownloadInitiator } from '@/components/download-initator'
 import { ImageThumbnail } from '@/components/image-thumbnail'
-import { bytesToMegaBytes } from '@/lib/utils'
+import { bytesToMegaBytes, isNil } from '@/lib/utils'
 import { notFound } from 'next/navigation'
 import { UnlockFile } from '@/components/unlock-file'
 import { cookies } from 'next/headers'
@@ -17,15 +17,15 @@ export default async function DownloadPage({ params }: ComponentProps) {
   const sharelink = (await params).sharelink[0]
   const cookieStore = await cookies()
 
-  if (!(await isLinkExists(sharelink))) {
-    return notFound()
-  }
-
   const [image] = await getImageByLink(sharelink, {
     file_name: images.file_name,
     file_size: images.file_size,
     password: images.password,
   })
+
+  if (isNil(image)) {
+    return notFound();
+  }
 
   const isPrivate = image.password
   let hasAccess = isPrivate ? false : true
