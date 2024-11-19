@@ -115,7 +115,7 @@ export async function getUser(id: string) {
  */
 export async function deleteImages(
   share_links: string[],
-  APP_KEY: string,
+  APP_KEY?: string,
 ): Promise<void> {
   const session = await auth()
 
