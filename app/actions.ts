@@ -13,6 +13,7 @@ import {
   inArray,
   isNull,
   or,
+  sql,
   SQL,
   SQLWrapper,
 } from 'drizzle-orm'
@@ -47,7 +48,10 @@ export async function getImageByLink(
   const conditions: unknown[] = [eq(images.share_link, link)]
   if (notExpired) {
     conditions.push(
-      or(gt(images.expiration_time, new Date()), isNull(images.expiration_time)),
+      or(
+        gt(images.expiration_time, new Date()),
+        isNull(images.expiration_time),
+      ),
       or(gt(images.downloads_left, 0), isNull(images.downloads_left)),
     )
   }
@@ -217,4 +221,26 @@ export async function updateDownloadsLeft(
     .update(images)
     .set({ downloads_left: newValue })
     .where(eq(images.share_link, sharelink))
+}
+
+export async function getSessionUserImages() {
+  const session = await getSession()
+
+  if (!session) {
+    return []
+  }
+
+  return await db
+    .select({
+      file_name: images.file_name,
+      file_type: images.file_type,
+      file_size: images.file_size,
+      upload_date: images.upload_date,
+      downloads_left: images.downloads_left,
+      expiration_time: images.expiration_time,
+      share_link: images.share_link,
+      has_password: sql<boolean>`CASE WHEN ${images.password} IS NOT NULL THEN true ELSE false END`.as('has_password')
+    })
+    .from(images)
+    .where(eq(images.uploader_id, session.user.id))
 }

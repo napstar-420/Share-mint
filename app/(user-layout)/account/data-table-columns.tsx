@@ -4,12 +4,10 @@ import { ColumnDef } from '@tanstack/react-table'
 import { bytesToMegaBytes } from '@/lib/utils'
 import { CONFIG } from '@/app/config'
 import { format, formatDistanceToNow } from 'date-fns'
-import { UserCell } from '@/components/admin/user-cell'
 import { ImageCell } from '@/components/admin/image-cell'
 import { ArrowUpDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
-import { User } from '@/app/db/users'
 import { FcCancel } from 'react-icons/fc'
 import { FaLock } from 'react-icons/fa6'
 
@@ -139,7 +137,7 @@ export const columns: ColumnDef<unknown, unknown>[] = [
     },
   },
   {
-    accessorKey: 'password',
+    accessorKey: 'has_password',
     header: ({ column }) => {
       return (
         <Button
@@ -152,20 +150,12 @@ export const columns: ColumnDef<unknown, unknown>[] = [
       )
     },
     cell: ({ row }) => {
-      const password = row.getValue('password') as string
+      const hasPassword = row.getValue('has_password') as boolean
       return (
         <div className="text-xl mx-auto w-max">
-          {password ? <FaLock /> : <FcCancel />}
+          {hasPassword ? <FaLock /> : <FcCancel />}
         </div>
       )
-    },
-  },
-  {
-    accessorKey: 'user',
-    header: 'User',
-    cell: ({ row }) => {
-      const user = row.getValue('user') as User
-      return <UserCell user={user} />
     },
   },
 ]
