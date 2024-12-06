@@ -1,8 +1,7 @@
 'use client'
 
 import { ColumnDef } from '@tanstack/react-table'
-import { bytesToMegaBytes } from '@/lib/utils'
-import { CONFIG } from '@/app/config'
+import { bytesToMegaBytes, createPreviewLink } from '@/lib/utils'
 import { format, formatDistanceToNow } from 'date-fns'
 import { UserCell } from '@/components/admin/user-cell'
 import { ImageCell } from '@/components/admin/image-cell'
@@ -42,7 +41,7 @@ export const columns: ColumnDef<unknown, unknown>[] = [
     cell: ({ row }) => {
       const link = row.getValue('share_link') as string
       const name = row.getValue('file_name') as string
-      const src = CONFIG.ROUTE.API.IMG_PREVIEW(link, 's600')
+      const src = createPreviewLink(link)
 
       return <ImageCell src={src} name={name} />
     },

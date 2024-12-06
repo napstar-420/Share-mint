@@ -1,9 +1,8 @@
 import { getImageByLink } from '@/app/actions'
-import { CONFIG } from '@/app/config'
 import { images } from '@/app/db/images'
 import { DownloadInitiator } from '@/components/download-initator'
 import { ImageThumbnail } from '@/components/image-thumbnail'
-import { bytesToMegaBytes, isNil } from '@/lib/utils'
+import { bytesToMegaBytes, createDownloadLink, createPreviewLink, isNil } from '@/lib/utils'
 import { notFound } from 'next/navigation'
 import { UnlockFile } from '@/components/unlock-file'
 import { cookies } from 'next/headers'
@@ -45,8 +44,8 @@ export default async function DownloadPage({ params }: ComponentProps) {
     }
   }
 
-  const downloadUrl = `${CONFIG.APP_URL}${CONFIG.ROUTE.API.DOWNLOAD}/${sharelink}`
-  const previewLink = `${CONFIG.APP_URL}${CONFIG.ROUTE.API.IMG_PREVIEW(sharelink, 's220')}`
+  const downloadUrl = createDownloadLink(sharelink)
+  const previewLink = createPreviewLink(sharelink, 's600')
 
   return (
     <div className="min-h-[calc(100dvh_-_120px)] grid place-items-center sm:p-4">
@@ -65,10 +64,10 @@ export default async function DownloadPage({ params }: ComponentProps) {
             <UnlockFile sharelink={sharelink} />
           ) : (
             <>
-              <div className="mx-auto border-2 flex gap-3 mt-8 p-2 rounded-md">
-                <ImageThumbnail src={previewLink} />
-                <div>
-                  <h4 className="text-lg font-semibold tracking-tight">
+              <div className="mx-auto max-w-64 border-2 flex flex-col gap-3 mt-8 p-2 rounded-md">
+                <ImageThumbnail src={previewLink} classNames='w-full mx-auto'/>
+                <div className='w-full'>
+                  <h4 className="text-lg font-semibold tracking-tight truncate">
                     {image.file_name}
                   </h4>
                   <small className="text-sm font-medium leading-none">

@@ -1,7 +1,18 @@
-export function ImageThumbnail({ src }: { src: string }) {
+import { cn } from '@/lib/utils'
+
+export function ImageThumbnail({
+  src,
+  classNames,
+}: {
+  src: string
+  classNames?: string
+}) {
   return (
     <div
-      className="aspect-square w-14 bg-primary-foreground rounded-md bg-cover bg-center"
+      className={cn(
+        'aspect-square w-14 bg-primary-foreground rounded-md bg-cover bg-center',
+        classNames,
+      )}
       style={{ backgroundImage: `url(${src})` }}
     />
   )

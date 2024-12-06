@@ -32,6 +32,14 @@ export function createShareLink(identifier: string) {
   return `${CONFIG.APP_URL}${CONFIG.ROUTE.DOWNLOAD}/${identifier}`
 }
 
+export function createPreviewLink(identifier: string, params?: string) {
+  return `${CONFIG.APP_URL}${CONFIG.ROUTE.API.IMG_PREVIEW(identifier, params)}`
+}
+
+export function createDownloadLink(identifier: string) {
+  return `${CONFIG.APP_URL}${CONFIG.ROUTE.API.DOWNLOAD}/${identifier}`
+}
+
 export async function copyToClipboard(data: string) {
   return navigator.clipboard.writeText(data)
 }

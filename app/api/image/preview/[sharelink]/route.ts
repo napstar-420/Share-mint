@@ -56,10 +56,12 @@ export async function GET(
     return NextResponse.json({ message: 'File not found' }, { status: 404 })
   }
 
+  // Remove the params given by gdrive
+  thumbnailLink = thumbnailLink.slice(0, -5)
+  console.log(thumbnailLink)
+
   if (searchParams.has('p')) {
-    thumbnailLink = thumbnailLink
-      .slice(0, -4)
-      .concat(searchParams.get('p') as string)
+    thumbnailLink = `${thumbnailLink}=${searchParams.get('p')}`
   }
 
   const preview = await fetch(thumbnailLink, {
