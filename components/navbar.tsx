@@ -1,8 +1,12 @@
 import Link from 'next/link'
 import { CONFIG } from '@/app/config'
 import { ToggleTheme } from '@/components/theme-toggle'
+import UserSessionMenu from '@/components/user-session-menu'
+import { auth } from '@/auth'
 
-export function Navbar() {
+export async function Navbar() {
+  const session = await auth()
+
   return (
     <nav className="py-10 flex items-center justify-between">
       <div className="absolute top-0 left-0 w-full bg-brand-primary h-2"></div>
@@ -14,6 +18,7 @@ export function Navbar() {
       </Link>
       <div className="flex items-center gap-2 sm:gap-4">
         <ToggleTheme />
+        <UserSessionMenu session={session} />
       </div>
     </nav>
   )

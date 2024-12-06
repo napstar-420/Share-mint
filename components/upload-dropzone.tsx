@@ -5,25 +5,23 @@ import { FcOpenedFolder } from 'react-icons/fc'
 import { MdOutlineInfo } from 'react-icons/md'
 import { CONFIG } from '@/app/config'
 import { Separator } from '@/components/ui/separator'
-import {
-  useState,
-  DragEvent,
-  Dispatch,
-  SetStateAction,
-  ChangeEvent,
-} from 'react'
-import { readableFileType } from '@/lib/utils'
+import { useState, DragEvent, ChangeEvent, useEffect, useRef } from 'react'
+import { bytesToMegaBytes, readableFileType } from '@/lib/utils'
 
 interface ComponentProps {
-  setFiles: Dispatch<SetStateAction<File[]>>
+  addFiles: (files: File[]) => void
 }
 
-export function UploadDropZone({ setFiles }: ComponentProps) {
+export function UploadDropZone({ addFiles }: ComponentProps) {
   const [isDragging, setIsDragging] = useState(false)
+  const dropzone = useRef<HTMLDivElement>(null)
 
   const handleOnDrag = (e: DragEvent) => {
     e.preventDefault()
-    setIsDragging(true)
+    const target = e.target as Element
+    setIsDragging(
+      Boolean(target.id === 'dropzone' || dropzone.current?.contains(target)),
+    )
   }
 
   const handleOnDrop = (e: DragEvent) => {
@@ -42,13 +40,13 @@ export function UploadDropZone({ setFiles }: ComponentProps) {
 
   const handleFiles = (files: FileList) => {
     if (files.length > 0) {
-      const newFiles = Array.from(files)
-      const validFiles = newFiles.filter(
+      const newFiles = Array.from(files).filter(
         (file) =>
           CONFIG.FILE_TYPES.ACCEPTED.includes(file.type) &&
           file.size <= CONFIG.MAX_FILE_SIZE,
       )
-      setFiles((prevFiles) => [...prevFiles, ...validFiles])
+
+      addFiles(newFiles)
     }
   }
 
@@ -59,11 +57,26 @@ export function UploadDropZone({ setFiles }: ComponentProps) {
     .toString()
     .replaceAll(',', ', ')
 
+  useEffect(() => {
+    document.body.addEventListener(
+      'dragover',
+      handleOnDrag as unknown as EventListener,
+    )
+
+    // Cleanup
+    return () => {
+      document.body.removeEventListener(
+        'dragover',
+        handleOnDrag as unknown as EventListener,
+      )
+    }
+  }, [])
+
   return (
     <div
-      className={`py-12 px-4 rounded-xl flex flex-col items-center ${isDragging ? 'bg-brand-primary' : 'bg-primary-foreground'}`}
-      onDragOver={handleOnDrag}
-      onDragLeave={() => setIsDragging(false)}
+      id="dropzone"
+      ref={dropzone}
+      className={`py-12 px-4 rounded-xl flex flex-col items-center ${isDragging ? 'bg-brand-primary' : ''}`}
       onDrop={handleOnDrop}
     >
       <FcOpenedFolder className="text-6xl my-4" />
@@ -87,7 +100,8 @@ export function UploadDropZone({ setFiles }: ComponentProps) {
           <MdOutlineInfo /> Accepted file types: {acceptedFileTypes}
         </p>
         <p className="text-sm text-muted-foreground flex items-start gap-2">
-          <MdOutlineInfo /> Max file size: {CONFIG.MAX_FILE_SIZE} mb
+          <MdOutlineInfo /> Max file size:{' '}
+          {bytesToMegaBytes(CONFIG.MAX_FILE_SIZE, true)}
         </p>
         <p className="text-sm text-muted-foreground flex items-start gap-2">
           <MdOutlineInfo /> Max images per batch: {CONFIG.MAX_FILES_PER_BATCH}

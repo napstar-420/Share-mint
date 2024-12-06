@@ -1,0 +1,1 @@
+ALTER TABLE "images" ADD COLUMN "drive_id" varchar NOT NULL;
