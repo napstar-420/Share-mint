@@ -57,7 +57,7 @@ export function AccountData() {
   })
 
   const fetchImages = async () => {
-    const data = await getSessionUserImages();
+    const data = await getSessionUserImages()
     setImages(data as ColumnRow[])
   }
 

@@ -2,7 +2,12 @@ import { getImageByLink } from '@/app/actions'
 import { images } from '@/app/db/images'
 import { DownloadInitiator } from '@/components/download-initator'
 import { ImageThumbnail } from '@/components/image-thumbnail'
-import { bytesToMegaBytes, createDownloadLink, createPreviewLink, isNil } from '@/lib/utils'
+import {
+  bytesToMegaBytes,
+  createDownloadLink,
+  createPreviewLink,
+  isNil,
+} from '@/lib/utils'
 import { notFound } from 'next/navigation'
 import { UnlockFile } from '@/components/unlock-file'
 import { cookies } from 'next/headers'
@@ -23,7 +28,7 @@ export default async function DownloadPage({ params }: ComponentProps) {
   })
 
   if (isNil(image)) {
-    return notFound();
+    return notFound()
   }
 
   const isPrivate = image.password
@@ -65,8 +70,8 @@ export default async function DownloadPage({ params }: ComponentProps) {
           ) : (
             <>
               <div className="mx-auto max-w-64 border-2 flex flex-col gap-3 mt-8 p-2 rounded-md">
-                <ImageThumbnail src={previewLink} classNames='w-full mx-auto'/>
-                <div className='w-full'>
+                <ImageThumbnail src={previewLink} classNames="w-full mx-auto" />
+                <div className="w-full">
                   <h4 className="text-lg font-semibold tracking-tight truncate">
                     {image.file_name}
                   </h4>

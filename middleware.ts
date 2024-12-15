@@ -1,6 +1,6 @@
 import { auth } from '@/auth'
 import { NextResponse } from 'next/server'
-import { UserRoles } from '@/lib/enums'
+import { UserRoles } from '@/enums'
 
 export default auth((req) => {
   const user = req.auth?.user

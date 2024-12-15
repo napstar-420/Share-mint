@@ -2,7 +2,12 @@
 
 import { useState } from 'react'
 import { ColumnDef } from '@tanstack/react-table'
-import { bytesToMegaBytes, copyToClipboard, createPreviewLink, createShareLink } from '@/lib/utils'
+import {
+  bytesToMegaBytes,
+  copyToClipboard,
+  createPreviewLink,
+  createShareLink,
+} from '@/lib/utils'
 import { format, formatDistanceToNow } from 'date-fns'
 import { ImageCell } from '@/components/admin/image-cell'
 import { ArrowUpDown } from 'lucide-react'
@@ -10,8 +15,8 @@ import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { FcCancel } from 'react-icons/fc'
 import { FaLock } from 'react-icons/fa6'
-import { BsEyeFill } from "react-icons/bs";
-import { MdOutlineFileDownload } from "react-icons/md";
+import { BsEyeFill } from 'react-icons/bs'
+import { MdOutlineFileDownload } from 'react-icons/md'
 
 export const columns: ColumnDef<unknown, unknown>[] = [
   {
@@ -163,25 +168,29 @@ export const columns: ColumnDef<unknown, unknown>[] = [
   {
     id: 'preview_copy',
     header: () => (
-      <div className="font-medium flex items-center gap-2 justify-center">Preview link <BsEyeFill /></div>
+      <div className="font-medium flex items-center gap-2 justify-center">
+        Preview link <BsEyeFill />
+      </div>
     ),
     cell: ({ row }) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      const [copyText, setCopyText] = useState('Copy preview link');
+      const [copyText, setCopyText] = useState('Copy preview link')
       const handleClick = async () => {
         const link = row.getValue('share_link') as string
         const previewLink = createPreviewLink(link)
         await copyToClipboard(previewLink)
 
-        setCopyText('Copied! 🗸');
+        setCopyText('Copied! 🗸')
 
         setTimeout(() => {
-          setCopyText('Copy preview link');
-        }, 2000);
+          setCopyText('Copy preview link')
+        }, 2000)
       }
 
       return (
-        <Button variant='outline' onClick={handleClick} className='w-full'>{copyText}</Button>
+        <Button variant="outline" onClick={handleClick} className="w-full">
+          {copyText}
+        </Button>
       )
     },
     enableSorting: false,
@@ -190,25 +199,29 @@ export const columns: ColumnDef<unknown, unknown>[] = [
   {
     id: 'download_copy',
     header: () => (
-      <div className="font-medium flex items-center gap-2 justify-center">Download link <MdOutlineFileDownload /></div>
+      <div className="font-medium flex items-center gap-2 justify-center">
+        Download link <MdOutlineFileDownload />
+      </div>
     ),
     cell: ({ row }) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      const [downloadText, setDownloadText] = useState('Copy download link');
+      const [downloadText, setDownloadText] = useState('Copy download link')
       const handleClick = async () => {
         const link = row.getValue('share_link') as string
         const previewLink = createShareLink(link)
         await copyToClipboard(previewLink)
 
-        setDownloadText('Copied! 🗸');
+        setDownloadText('Copied! 🗸')
 
         setTimeout(() => {
-          setDownloadText('Copy download link');
-        }, 2000);
+          setDownloadText('Copy download link')
+        }, 2000)
       }
 
       return (
-        <Button variant='secondary' onClick={handleClick} className='w-full'>{downloadText}</Button>
+        <Button variant="secondary" onClick={handleClick} className="w-full">
+          {downloadText}
+        </Button>
       )
     },
     enableSorting: false,

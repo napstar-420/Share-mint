@@ -2,7 +2,7 @@ import 'dotenv/config'
 import { google, type drive_v3 } from 'googleapis'
 import { GoogleAuth } from 'google-auth-library'
 import streamifier from 'streamifier'
-import { DriveScopes } from '@/lib/enums'
+import { DriveScopes } from '@/enums'
 import { MethodOptions } from 'googleapis/build/src/apis/abusiveexperiencereport'
 
 export const getDriveService = (scopes?: DriveScopes[]) => {

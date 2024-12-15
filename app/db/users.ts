@@ -1,4 +1,4 @@
-import { UserRoles } from '@/lib/enums'
+import { UserRoles } from '@/enums'
 import { pgTable, timestamp, text, pgEnum } from 'drizzle-orm/pg-core'
 
 export const UserRoleEnum = pgEnum('user_role', [

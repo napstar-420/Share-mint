@@ -14,7 +14,7 @@ import { FaUser } from 'react-icons/fa6'
 import { UserAvatar } from '@/components/user-avatar'
 import { Session } from 'next-auth'
 import { SignOut } from '@/components/signout-button'
-import { UserRoles } from '@/lib/enums'
+import { UserRoles } from '@/enums'
 
 export default function UserSessionMenu({
   session,

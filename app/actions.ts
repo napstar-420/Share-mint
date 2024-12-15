@@ -20,7 +20,7 @@ import {
 import { images, ImageSelectFields, NewImage } from '@/app/db/images'
 import { users } from '@/app/db/users'
 import { deleteFile } from '@/app/service'
-import { UserRoles } from '@/lib/enums'
+import { UserRoles } from '@/enums'
 import bcrypt from 'bcryptjs'
 import { isNil } from '@/lib/utils'
 import jwt from 'jsonwebtoken'
@@ -239,7 +239,10 @@ export async function getSessionUserImages() {
       downloads_left: images.downloads_left,
       expiration_time: images.expiration_time,
       share_link: images.share_link,
-      has_password: sql<boolean>`CASE WHEN ${images.password} IS NOT NULL THEN true ELSE false END`.as('has_password')
+      has_password:
+        sql<boolean>`CASE WHEN ${images.password} IS NOT NULL THEN true ELSE false END`.as(
+          'has_password',
+        ),
     })
     .from(images)
     .where(eq(images.uploader_id, session.user.id))
