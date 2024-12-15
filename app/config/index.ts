@@ -15,11 +15,11 @@ export const CONFIG = {
     CONTACT: '/contact',
     ACCOUNT: '/account',
     THANKS: '/thanks',
+    IMG_PREVIEW: (sharelink: string, params?: string) =>
+      `/image/${sharelink}${params ? `?p=${params}` : ''}`,
     API: {
       UPLOAD: '/api/upload',
       DOWNLOAD: '/api/download',
-      IMG_PREVIEW: (sharelink: string, params?: string) =>
-        `/api/image/preview/${sharelink}${params ? `?p=${params}` : ''}`,
     },
     ADMIN: {
       DASHBOARD: '/admin/dashboard',

@@ -33,7 +33,7 @@ export function createShareLink(identifier: string) {
 }
 
 export function createPreviewLink(identifier: string, params?: string) {
-  return `${CONFIG.APP_URL}${CONFIG.ROUTE.API.IMG_PREVIEW(identifier, params)}`
+  return `${CONFIG.APP_URL}${CONFIG.ROUTE.IMG_PREVIEW(identifier, params)}`
 }
 
 export function createDownloadLink(identifier: string) {
