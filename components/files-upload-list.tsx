@@ -24,6 +24,7 @@ interface ComponentProps {
   errorQueue: number[]
   uploadedFiles: UploadedFiles
   onRemove: (i: number) => void
+  disabled?: boolean
 }
 
 export function FilesUploadList({
@@ -32,6 +33,7 @@ export function FilesUploadList({
   uploadedFiles,
   errorQueue,
   onRemove,
+  disabled,
 }: ComponentProps) {
   const [previews, setPreviews] = useState<Record<number, string>>({})
 
@@ -48,13 +50,17 @@ export function FilesUploadList({
   }
 
   useEffect(() => {
-    const newPreviews: Record<number, string> = {}
+    const createPreviews = async () => {
+      const newPreviews: Record<number, string> = {}
 
-    files.forEach(async (file, index) => {
-      newPreviews[index] = await createThumbnail(file)
-    })
+      for (let i = 0; i < files.length; i++) {
+        const preview = await createThumbnail(files[i])
+        newPreviews[i] = preview
+        setPreviews((prev) => ({ ...prev, [i]: preview }))
+      }
+    }
 
-    setPreviews(newPreviews)
+    createPreviews()
   }, [files])
 
   return (
@@ -119,6 +125,7 @@ export function FilesUploadList({
                   size="icon"
                   className="rounded-full"
                   onClick={() => onRemove(index)}
+                  disabled={disabled}
                 >
                   <MdCancel />
                 </Button>

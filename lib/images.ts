@@ -9,7 +9,7 @@ export function createThumbnail(file: File): Promise<string> {
       const img = new Image()
       img.onload = () => {
         const canvas = document.createElement('canvas')
-        const maxSize = 100 // Set thumbnail max size
+        const maxSize = 200 // Set thumbnail max size
         const scaleSize = Math.min(maxSize / img.width, maxSize / img.height)
         canvas.width = img.width * scaleSize
         canvas.height = img.height * scaleSize
@@ -20,7 +20,15 @@ export function createThumbnail(file: File): Promise<string> {
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
         }
 
-        resolve(canvas.toDataURL('image/jpeg')) // Use compressed format
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              resolve(URL.createObjectURL(blob))
+            }
+          },
+          'image/webp',
+          0.5,
+        )
       }
       img.src = reader.result as string
     }

@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export function ImageThumbnail({
   src,
@@ -8,12 +9,21 @@ export function ImageThumbnail({
   classNames?: string
 }) {
   return (
-    <div
-      className={cn(
-        'aspect-square w-14 bg-primary-foreground rounded-md bg-cover bg-center',
-        classNames,
-      )}
-      style={{ backgroundImage: `url(${src})` }}
-    />
+    <div className="aspect-square w-14 rounded-md overflow-hidden relative">
+      <Skeleton className="w-full h-full" />
+      {
+        // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+        src && (
+          <img
+            className={cn(
+              'bg-cover bg-center object-cover object-center absolute top-0 left-0 w-full h-full',
+              classNames,
+            )}
+            loading="lazy"
+            src={src}
+          />
+        )
+      }
+    </div>
   )
 }

@@ -19,25 +19,32 @@ import { bytesToMegaBytes } from '@/lib/utils'
 
 export function UploadDropZone() {
   const [isDragging, setIsDragging] = useState(false)
+  const dropzone = useRef<HTMLDivElement>(null)
+
+  // Image files uploaded by user
   const [files, setFiles] = useState<File[]>([])
+  // Tracks the upload progress of each image
+  const [uploadQueue, setUploadQueue] = useState<UploadQueue>({})
+  // Tracks the uploaded images
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFiles>({})
+  // Tracks the images that failed to upload
+  const [errorQueue, setErrorQueue] = useState<number[]>([])
+  // Used to disable the UI elements
+  const [disabled, setDisabled] = useState(false)
+  // Used to track the files that have been processed, regardless of their upload status
+  const processedFiles = useRef<number[]>([])
+  // Used to track the number of images currently being uploaded
+  const activeImagesInProgress = useRef(0)
+
   const [password, setPassword] = useState('')
   const [isPrivate, setIsPrivate] = useState(false)
-  const [uploadQueue, setUploadQueue] = useState<UploadQueue>({})
-  const [uploadedFiles, setUploadedFiles] = useState<UploadedFiles>({})
-  const [errorQueue, setErrorQueue] = useState<number[]>([])
   const [downloadsLeft, setDownloadsLeft] = useState(
     CONFIG.DOWNLOAD_OPTIONS[0].value,
   )
   const [expirationTime, setExpirationTime] = useState(
     CONFIG.EXPIRATION_OPTIONS[2].value,
   )
-  const [disabled, setDisabled] = useState(false)
-  const dropzone = useRef<HTMLDivElement>(null)
   const passwordRef = useRef<HTMLInputElement>(null)
-  const processedFiles = useRef<number[]>([])
-
-  // Used to track the number of images currently being uploaded
-  const activeImagesInProgress = useRef(0)
 
   const removeFile = (index: number) => {
     setFiles(files.filter((_, i) => i !== index))
@@ -243,6 +250,7 @@ export function UploadDropZone() {
             uploadedFiles={uploadedFiles}
             onRemove={removeFile}
             errorQueue={errorQueue}
+            disabled={disabled}
           />
         </ScrollArea>
       ) : (
