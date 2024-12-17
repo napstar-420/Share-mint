@@ -9,11 +9,11 @@ export function ImageThumbnail({
   classNames?: string
 }) {
   return (
-    <div className="aspect-square w-14 rounded-md overflow-hidden relative">
+    <div className="aspect-square min-w-14 rounded-md overflow-hidden relative">
       <Skeleton className="w-full h-full" />
       {
-        // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
         src && (
+          // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
           <img
             className={cn(
               'bg-cover bg-center object-cover object-center absolute top-0 left-0 w-full h-full',
