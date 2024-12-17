@@ -58,7 +58,6 @@ export async function GET(
 
   // Remove the params given by gdrive
   thumbnailLink = thumbnailLink.slice(0, -5)
-  console.log(thumbnailLink)
 
   if (searchParams.has('p')) {
     thumbnailLink = `${thumbnailLink}=${searchParams.get('p')}`

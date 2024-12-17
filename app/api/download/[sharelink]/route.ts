@@ -1,6 +1,7 @@
 import {
   deleteImages,
   getImageByLink,
+  getSession,
   updateDownloadsLeft,
 } from '@/app/actions'
 import { images } from '@/app/db/images'
@@ -14,6 +15,7 @@ export async function GET(
   _: NextRequest,
   { params }: { params: Promise<{ sharelink: string }> },
 ) {
+  const session = await getSession();
   const { sharelink } = await params
   const cookieStore = await cookies()
 
@@ -29,6 +31,7 @@ export async function GET(
       password: images.password,
       downloads_left: images.downloads_left,
       expiration_time: images.expiration_time,
+      uploader_id: images.uploader_id,
     })
 
     if (isNil(image) || isNil(image.drive_id)) {
@@ -68,10 +71,12 @@ export async function GET(
       'Content-Disposition',
       `attachment; filename="${image.file_name}"`,
     )
+    headers.set('Cache-Control', 'no-cache, no-store, must-revalidate')
+    headers.set('Content-Length', fileStream.headers['content-length']!)
 
     let newDownloadsLeft: number | null
 
-    if (image.downloads_left !== null) {
+    if (image.downloads_left !== null && image.uploader_id !== session?.user?.id) {
       newDownloadsLeft = image.downloads_left! - 1
       await updateDownloadsLeft(sharelink, newDownloadsLeft)
 

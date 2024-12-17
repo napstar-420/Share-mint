@@ -7,7 +7,7 @@ import { NewImage } from '@/app/db/images'
 import { CONFIG } from '@/app/config'
 import { generateUniqueIdentifier, first, isNil } from '@/lib/utils'
 import { insertImage, isLinkExists } from '@/app/actions'
-import { UploadSchema } from '@/app/(user-layout)/upload/schema'
+import { UploadSchema } from '@/app/(user-layout)/(upload)/schema'
 import bcrypt from 'bcryptjs'
 
 export async function POST(req: Request) {

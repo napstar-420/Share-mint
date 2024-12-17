@@ -1,4 +1,4 @@
-import { UploadSchema } from '@/app/(user-layout)/upload/schema'
+import { UploadSchema } from '@/app/(user-layout)/(upload)/schema'
 import { UploadResponse } from '@/types'
 import { CONFIG } from '@/app/config'
 

@@ -2,7 +2,7 @@
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { LuDownload } from 'react-icons/lu'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { toast } from 'sonner'
 import { CONFIG } from '@/app/config'
 
@@ -12,8 +12,9 @@ interface ComponentProps {
 }
 
 export function DownloadInitiator({ downloadUrl, file_name }: ComponentProps) {
-  const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const [loading, setLoading] = useState(false)
+  const [progress, setProgress] = useState(0)
 
   const initDownload = async () => {
     try {
@@ -23,9 +24,30 @@ export function DownloadInitiator({ downloadUrl, file_name }: ComponentProps) {
         throw new Error('Error downloading')
       }
 
-      const blob = await response.blob()
+      const contentLength = response.headers.get('content-length')
+
+      let blob: Blob
+
+      if (!contentLength) {
+        blob = await response.blob()
+      } else {
+        const total = parseInt(contentLength, 10)
+        const values = []
+        let loaded = 0
+        const reader = response.body!.getReader()
+
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) break
+          values.push(value)
+          loaded += value.byteLength
+          setProgress(Math.round((loaded / total) * 100))
+          blob = new Blob(values)
+        }
+      }
+
       const link = document.createElement('a')
-      link.href = URL.createObjectURL(blob)
+      link.href = URL.createObjectURL(blob!)
       link.download = file_name
       link.click()
 
@@ -50,7 +72,17 @@ export function DownloadInitiator({ downloadUrl, file_name }: ComponentProps) {
       aria-label="Download image"
       disabled={loading}
     >
-      Download <LuDownload />
+      {loading ? (
+        progress ? (
+          `Downloading (${progress}%)`
+        ) : (
+          'Please wait...'
+        )
+      ) : (
+        <>
+          Download <LuDownload />
+        </>
+      )}
     </Button>
   )
 }
