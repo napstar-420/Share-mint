@@ -71,7 +71,7 @@ export function FilesUploadList({
             key={index}
             className={`border-2 bg-primary-foreground p-2 rounded-xl`}
           >
-            <div className="w-full grid grid-cols-[auto_1fr] xs:grid-cols-[auto_1fr_auto] gap-4 items-center">
+            <div className="w-full grid grid-cols-[auto_1fr_auto] gap-4 items-center">
               {/* Lazy load and memoize thumbnail image */}
               <ImageThumbnail src={previews[index]} />
               <div className="flex flex-col flex-nowrap min-w-0">
