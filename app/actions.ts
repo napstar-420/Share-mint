@@ -246,4 +246,5 @@ export async function getSessionUserImages() {
     })
     .from(images)
     .where(eq(images.uploader_id, session.user.id))
+    .orderBy(desc(images.upload_date))
 }

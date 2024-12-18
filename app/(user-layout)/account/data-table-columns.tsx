@@ -8,7 +8,7 @@ import {
   createPreviewLink,
   createShareLink,
 } from '@/lib/utils'
-import { format, formatDistanceToNow } from 'date-fns'
+import { format, formatDistanceToNow, isPast } from 'date-fns'
 import { ImageCell } from '@/components/admin/image-cell'
 import { ArrowUpDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -47,7 +47,9 @@ export const columns: ColumnDef<unknown, unknown>[] = [
     cell: ({ row }) => {
       const link = row.getValue('share_link') as string
       const name = row.getValue('file_name') as string
-      const src = createPreviewLink(link)
+      const src = createPreviewLink(link, { p: 's600' })
+
+      console.log(src)
 
       return <ImageCell src={src} name={name} />
     },
@@ -136,11 +138,19 @@ export const columns: ColumnDef<unknown, unknown>[] = [
     },
     cell: ({ row }) => {
       const expirationDate = row.getValue('expiration_time') as string
-      const timeLeft = formatDistanceToNow(new Date(expirationDate), {
-        addSuffix: true,
-      })
 
-      return <div>{expirationDate ? timeLeft : 'Never'}</div>
+      if (!expirationDate) {
+        return <div>Never</div>;
+      }
+
+      const expiration = new Date(expirationDate);
+      const isExpired = isPast(expiration);
+
+      const displayText = isExpired
+      ? 'Expired'
+      : formatDistanceToNow(expiration, { addSuffix: true });
+
+      return <div>{displayText}</div>;
     },
   },
   {
