@@ -266,40 +266,43 @@ export function UploadDropZone() {
               true,
             )}
           </p>
-          <div className="flex items-center my-2 mt-4 gap-2 flex-wrap">
-            <span>Expire after</span>
-            <DownloadOptions
-              downloadsLeft={downloadsLeft}
-              setDownloadsLeft={setDownloadsLeft}
-              disabled={disabled}
-            />
-            <span>or</span>
-            <ExpirationOptions
-              expirationTime={expirationTime}
-              setExpirationTime={setExpirationTime}
-              disabled={disabled}
-            />
-          </div>
-
-          <div className="flex items-center flex-wrap mb-4 gap-2">
-            <Checkbox
-              id="private"
-              checked={isPrivate}
-              onClick={() => setIsPrivate((prev) => !prev)}
-              disabled={disabled}
-            />
-            <Label htmlFor="private">Protect with password</Label>
-            <Input
-              type="password"
-              ref={passwordRef}
-              placeholder="Password"
-              className="w-full max-w-xs"
-              value={password}
-              disabled={!isPrivate || disabled}
-              onChange={(e) => setPassword(e.target.value)}
-              maxLength={CONFIG.PASSWORD_MAX_LENGTH}
-              autoComplete="new-password"
-            />
+          <div className="flex flex-col my-2 mt-4 gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
+              <Label>Downloads limit</Label>
+              <DownloadOptions
+                downloadsLeft={downloadsLeft}
+                setDownloadsLeft={setDownloadsLeft}
+                disabled={disabled}
+              />
+            </div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <Label>Time limit</Label>
+              <ExpirationOptions
+                expirationTime={expirationTime}
+                setExpirationTime={setExpirationTime}
+                disabled={disabled}
+              />
+            </div>
+            <div className="flex items-center flex-wrap gap-2">
+              <Checkbox
+                id="private"
+                checked={isPrivate}
+                onClick={() => setIsPrivate((prev) => !prev)}
+                disabled={disabled}
+              />
+              <Label htmlFor="private">Protect with password</Label>
+              <Input
+                type="password"
+                ref={passwordRef}
+                placeholder="Password"
+                className="w-full max-w-xs"
+                value={password}
+                disabled={!isPrivate || disabled}
+                onChange={(e) => setPassword(e.target.value)}
+                maxLength={CONFIG.PASSWORD_MAX_LENGTH}
+                autoComplete="new-password"
+              />
+            </div>
           </div>
           <div className="mt-4 grid sm:grid-cols-2 gap-2">
             <BrowseFilesBtn
