@@ -50,7 +50,7 @@ export default async function DownloadPage({ params }: ComponentProps) {
   }
 
   const downloadUrl = createDownloadLink(sharelink)
-  const previewLink = createPreviewLink(sharelink, 's600')
+  const previewLink = createPreviewLink(sharelink, { p: 's600' })
 
   return (
     <div className="min-h-[calc(100dvh_-_120px)] grid place-items-center sm:p-4">

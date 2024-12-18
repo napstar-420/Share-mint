@@ -34,7 +34,7 @@ export async function GET(
 
     if (!token?.value) {
       return NextResponse.json(
-        { message: 'Token is required' },
+        { message: 'Unauthorized' },
         { status: 401 },
       )
     }

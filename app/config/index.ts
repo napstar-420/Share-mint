@@ -1,3 +1,6 @@
+import { getParamsString } from "@/lib/utils"
+import { SearchParams } from "@/types"
+
 const APP_URLS = {
   development: 'http://localhost:3000',
   production: 'https://share-mint.vercel.app',
@@ -15,8 +18,8 @@ export const CONFIG = {
     CONTACT: '/contact',
     ACCOUNT: '/account',
     THANKS: '/thanks',
-    IMG_PREVIEW: (sharelink: string, params?: string) =>
-      `/image/${sharelink}${params ? `?p=${params}` : ''}`,
+    IMG_PREVIEW: (sharelink: string, params?: SearchParams) =>
+      `/image/${sharelink}${params ? `?${getParamsString(params)}` : ''}`,
     API: {
       UPLOAD: '/api/upload',
       DOWNLOAD: '/api/download',

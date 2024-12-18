@@ -1,8 +1,8 @@
-import 'dotenv/config'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { nanoid } from 'nanoid'
 import { CONFIG } from '@/app/config'
+import { SearchParams } from '@/types'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -32,7 +32,7 @@ export function createShareLink(identifier: string) {
   return `${CONFIG.APP_URL}${CONFIG.ROUTE.DOWNLOAD}/${identifier}`
 }
 
-export function createPreviewLink(identifier: string, params?: string) {
+export function createPreviewLink(identifier: string, params?: SearchParams) {
   return `${CONFIG.APP_URL}${CONFIG.ROUTE.IMG_PREVIEW(identifier, params)}`
 }
 
@@ -50,4 +50,10 @@ export function first<T>(array: T[]) {
 
 export function isNil<T>(value: T) {
   return value === undefined || value === null
+}
+
+export function getParamsString(params: SearchParams) {
+  return Object.entries(params)
+    .map(([key, value]) => `${key}=${value}`)
+    .join('&')
 }

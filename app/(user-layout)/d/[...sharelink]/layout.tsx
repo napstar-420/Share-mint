@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return defaultMetadata
   }
 
-  const previewLink = createPreviewLink(sharelink, 's600')
+  const previewLink = createPreviewLink(sharelink, { p: 's600' })
 
   return {
     title: `Download ${image.file_name} shared by Sharemint`,
