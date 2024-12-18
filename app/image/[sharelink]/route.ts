@@ -33,10 +33,7 @@ export async function GET(
     const token = cookieStore.get('token')
 
     if (!token?.value) {
-      return NextResponse.json(
-        { message: 'Unauthorized' },
-        { status: 401 },
-      )
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
     }
 
     const decoded = jwt.verify(

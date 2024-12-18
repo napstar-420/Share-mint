@@ -140,17 +140,17 @@ export const columns: ColumnDef<unknown, unknown>[] = [
       const expirationDate = row.getValue('expiration_time') as string
 
       if (!expirationDate) {
-        return <div>Never</div>;
+        return <div>Never</div>
       }
 
-      const expiration = new Date(expirationDate);
-      const isExpired = isPast(expiration);
+      const expiration = new Date(expirationDate)
+      const isExpired = isPast(expiration)
 
       const displayText = isExpired
-      ? 'Expired'
-      : formatDistanceToNow(expiration, { addSuffix: true });
+        ? 'Expired'
+        : formatDistanceToNow(expiration, { addSuffix: true })
 
-      return <div>{displayText}</div>;
+      return <div>{displayText}</div>
     },
   },
   {

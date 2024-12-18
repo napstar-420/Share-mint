@@ -15,7 +15,7 @@ export async function GET(
   _: NextRequest,
   { params }: { params: Promise<{ sharelink: string }> },
 ) {
-  const session = await getSession();
+  const session = await getSession()
   const { sharelink } = await params
   const cookieStore = await cookies()
 
@@ -76,7 +76,10 @@ export async function GET(
 
     let newDownloadsLeft: number | null
 
-    if (image.downloads_left !== null && image.uploader_id !== session?.user?.id) {
+    if (
+      image.downloads_left !== null &&
+      image.uploader_id !== session?.user?.id
+    ) {
       newDownloadsLeft = image.downloads_left! - 1
       await updateDownloadsLeft(sharelink, newDownloadsLeft)
 

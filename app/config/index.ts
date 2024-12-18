@@ -1,5 +1,5 @@
-import { getParamsString } from "@/lib/utils"
-import { SearchParams } from "@/types"
+import { getParamsString } from '@/lib/utils'
+import { SearchParams } from '@/types'
 
 const APP_URLS = {
   development: 'http://localhost:3000',
