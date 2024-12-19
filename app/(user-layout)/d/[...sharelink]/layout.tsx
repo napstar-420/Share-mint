@@ -1,6 +1,6 @@
 import { getImageByLink } from '@/app/actions'
 import { images } from '@/app/db/images'
-import { createPreviewLink, isNil } from '@/lib/utils'
+import { createDownloadLink, createPreviewLink, isNil } from '@/lib/utils'
 import type { Metadata } from 'next'
 
 type Props = {
@@ -29,12 +29,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const previewLink = createPreviewLink(sharelink, { p: 's600' })
+  const title = `Download ${image.file_name} shared by Sharemint`
 
   return {
-    title: `Download ${image.file_name} shared by Sharemint`,
+    title: title,
     openGraph: {
       images: [{ url: previewLink }],
+      siteName: 'Sharemint',
+      url: createDownloadLink(sharelink),
     },
+    twitter: {
+      card: 'summary_large_image',
+      images: [{ url: previewLink }],
+      title: title,
+    }
   }
 }
 
