@@ -1,8 +1,14 @@
 import { getParamsString } from '@/lib/utils'
 import { SearchParams } from '@/types'
 
+const APP_URLS = {
+  development: 'http://localhost:3000',
+  production: 'https://share-mint.vercel.app',
+  test: '',
+}
+
 export const CONFIG = {
-  APP_URL: process.env.APP_URL! || 'http://localhost:3000',
+  APP_URL: APP_URLS[process.env.NODE_ENV],
   ROUTE: {
     HOME: '/',
     SIGN_IN: '/sign-in',
