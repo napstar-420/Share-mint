@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
         port: '',
       },
     ],
-    domains: ['localhost', 'share-mint.vercel.app'],
+    domains: ['localhost', 'share-mint.vercel.app', 'share-mint-git-v1-napstar420s-projects.vercel.app'],
   },
 }
 

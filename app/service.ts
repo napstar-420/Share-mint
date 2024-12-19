@@ -46,7 +46,7 @@ export async function uploadFile(file: File) {
 
     return response.data
   } catch (error) {
-    console.log(error)
+    console.error(error)
     throw error
   }
 }

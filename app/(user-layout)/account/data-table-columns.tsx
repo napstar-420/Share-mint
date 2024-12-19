@@ -49,8 +49,6 @@ export const columns: ColumnDef<unknown, unknown>[] = [
       const name = row.getValue('file_name') as string
       const src = createPreviewLink(link, { p: 's600' })
 
-      console.log(src)
-
       return <ImageCell src={src} name={name} />
     },
   },

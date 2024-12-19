@@ -77,7 +77,7 @@ export function AccountData() {
       toast('Images deleted successfully')
       setRowSelection({})
     } catch (error) {
-      console.log(error)
+      console.error(error)
       toast('Error when deleting images')
     } finally {
       setDeleting(false)
