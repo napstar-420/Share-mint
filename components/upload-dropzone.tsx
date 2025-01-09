@@ -1,29 +1,62 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
-import { FcOpenedFolder } from 'react-icons/fc'
-import { MdOutlineInfo } from 'react-icons/md'
 import { CONFIG } from '@/app/config'
-import { Separator } from '@/components/ui/separator'
-import {
-  useState,
-  DragEvent,
-  Dispatch,
-  SetStateAction,
-  ChangeEvent,
-} from 'react'
-import { readableFileType } from '@/lib/utils'
+import { useState, DragEvent, ChangeEvent, useEffect, useRef } from 'react'
+import { EmptyDropZone } from './empty-dropzone'
+import { toast } from 'sonner'
+import { ScrollArea } from './ui/scroll-area'
+import { FilesUploadList } from './files-upload-list'
+import type { UploadedFiles, UploadQueue } from '@/types'
+import { Button } from './ui/button'
+import { BrowseFilesBtn } from './browse-files-btn'
+import { Checkbox } from './ui/checkbox'
+import { Label } from './ui/label'
+import { Input } from './ui/input'
+import { DownloadOptions } from './download-options'
+import { ExpirationOptions } from './expiration-options'
+import { uploadFile } from '@/lib/images'
+import { bytesToMegaBytes } from '@/lib/utils'
 
-interface ComponentProps {
-  setFiles: Dispatch<SetStateAction<File[]>>
-}
-
-export function UploadDropZone({ setFiles }: ComponentProps) {
+export function UploadDropZone() {
   const [isDragging, setIsDragging] = useState(false)
+  const dropzone = useRef<HTMLDivElement>(null)
+
+  // Image files uploaded by user
+  const [files, setFiles] = useState<File[]>([])
+  // Tracks the upload progress of each image
+  const [uploadQueue, setUploadQueue] = useState<UploadQueue>({})
+  // Tracks the uploaded images
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFiles>({})
+  // Tracks the images that failed to upload
+  const [errorQueue, setErrorQueue] = useState<number[]>([])
+  // Used to disable the UI elements
+  const [disabled, setDisabled] = useState(false)
+  // Used to track the files that have been processed, regardless of their upload status
+  const processedFiles = useRef<number[]>([])
+  // Used to track the number of images currently being uploaded
+  const activeImagesInProgress = useRef(0)
+
+  const [password, setPassword] = useState('')
+  const [isPrivate, setIsPrivate] = useState(false)
+  const [downloadsLeft, setDownloadsLeft] = useState(
+    CONFIG.DOWNLOAD_OPTIONS[0].value,
+  )
+  const [expirationTime, setExpirationTime] = useState(
+    CONFIG.EXPIRATION_OPTIONS[2].value,
+  )
+  const passwordRef = useRef<HTMLInputElement>(null)
+
+  const removeFile = (index: number) => {
+    setFiles(files.filter((_, i) => i !== index))
+    processedFiles.current = processedFiles.current.filter((i) => i !== index)
+  }
 
   const handleOnDrag = (e: DragEvent) => {
     e.preventDefault()
-    setIsDragging(true)
+    const target = e.target as Element
+    setIsDragging(
+      Boolean(target.id === 'dropzone' || dropzone.current?.contains(target)),
+    )
   }
 
   const handleOnDrop = (e: DragEvent) => {
@@ -42,57 +75,254 @@ export function UploadDropZone({ setFiles }: ComponentProps) {
 
   const handleFiles = (files: FileList) => {
     if (files.length > 0) {
-      const newFiles = Array.from(files)
-      const validFiles = newFiles.filter(
+      const newFiles = Array.from(files).filter(
         (file) =>
           CONFIG.FILE_TYPES.ACCEPTED.includes(file.type) &&
           file.size <= CONFIG.MAX_FILE_SIZE,
       )
-      setFiles((prevFiles) => [...prevFiles, ...validFiles])
+
+      addFiles(newFiles)
     }
   }
 
-  const acceptedFileTypes = CONFIG.FILE_TYPES.ACCEPTED.map((t) =>
-    readableFileType(t),
-  )
-    .map((t) => `.${t}`)
-    .toString()
-    .replaceAll(',', ', ')
+  const addFiles = (newFiles: File[]) => {
+    /**
+     * Only allow upload to CONFIG.MAX_FILES_PER_UPLOAD
+     * images at a time to prevent lag
+     **/
+    const filesToAdd = newFiles.slice(
+      0,
+      CONFIG.MAX_FILES_PER_UPLOAD - files.length,
+    )
+
+    if (filesToAdd.length <= 0) {
+      toast('Cannot upload more files', {
+        description: `You can upload a maximum of ${CONFIG.MAX_FILES_PER_UPLOAD} images at a time.
+          Please reload the page to upload more.`,
+      })
+      return
+    }
+
+    if (isPrivate && !password) {
+      toast('Password required', {
+        description: 'Please enter a password or disable password protection',
+        action: {
+          label: 'Type password',
+          onClick: () => passwordRef.current?.focus(),
+        },
+      })
+      passwordRef.current?.focus()
+      return
+    }
+
+    setFiles((prevFiles) => [...prevFiles, ...filesToAdd])
+  }
+
+  const processFile = async (fileIndex: number) => {
+    setUploadQueue((prev) => {
+      return {
+        ...prev,
+        [fileIndex]: {
+          progress: 0,
+        },
+      }
+    })
+
+    activeImagesInProgress.current += 1
+    processedFiles.current.push(fileIndex)
+
+    const file = files[fileIndex]
+
+    try {
+      const data = await uploadFile(
+        file,
+        {
+          password,
+          downloadsLeft,
+          expirationTime,
+        },
+        (progress) => {
+          setUploadQueue((prev) => {
+            return {
+              ...prev,
+              [fileIndex]: {
+                progress,
+              },
+            }
+          })
+        },
+      )
+
+      setUploadedFiles((prev) => {
+        return {
+          ...prev,
+          [fileIndex]: data,
+        }
+      })
+    } catch (error: unknown) {
+      console.error(error)
+      setErrorQueue((prev) => [...prev, fileIndex])
+    } finally {
+      setUploadQueue((prev) => {
+        delete prev[fileIndex]
+        return prev
+      })
+
+      activeImagesInProgress.current -= 1
+
+      if (
+        activeImagesInProgress.current < CONFIG.MAX_CONCURRENT_UPLOADS &&
+        processedFiles.current.length < files.length
+      ) {
+        const nextFileIndex = processedFiles.current.length
+
+        if (nextFileIndex < files.length) {
+          processFile(nextFileIndex)
+        }
+      }
+    }
+  }
+
+  const initUpload = async (): Promise<void> => {
+    if (files.length === 0) {
+      return
+    }
+
+    setDisabled(true)
+
+    const uploadNextFile = async (fileIndex: number): Promise<void> => {
+      if (fileIndex >= files.length) {
+        return
+      }
+
+      if (
+        activeImagesInProgress.current < CONFIG.MAX_CONCURRENT_UPLOADS &&
+        processedFiles.current.length < files.length
+      ) {
+        await processFile(fileIndex)
+        const nextFileIndex = processedFiles.current.length
+        await uploadNextFile(nextFileIndex)
+      }
+    }
+
+    // Start uploads for the first batch
+    const initialUploads = Array.from(
+      { length: CONFIG.MAX_CONCURRENT_UPLOADS },
+      (_, i) => uploadNextFile(i),
+    )
+
+    await Promise.all(initialUploads)
+  }
+
+  useEffect(() => {
+    document.body.addEventListener(
+      'dragover',
+      handleOnDrag as unknown as EventListener,
+    )
+
+    // Cleanup
+    return () => {
+      document.body.removeEventListener(
+        'dragover',
+        handleOnDrag as unknown as EventListener,
+      )
+    }
+  }, [])
+
+  useEffect(() => {
+    if (isPrivate) {
+      passwordRef.current?.focus()
+    }
+  }, [isPrivate])
 
   return (
     <div
-      className={`py-12 px-4 rounded-xl flex flex-col items-center ${isDragging ? 'bg-brand-primary' : 'bg-primary-foreground'}`}
-      onDragOver={handleOnDrag}
-      onDragLeave={() => setIsDragging(false)}
+      id="dropzone"
+      ref={dropzone}
+      className={`rounded-xl p-2 ${isDragging ? 'bg-brand-primary' : ''}`}
       onDrop={handleOnDrop}
     >
-      <FcOpenedFolder className="text-6xl my-4" />
-      <h1 className="text-xl font-semibold">Drag and drop here</h1>
-      <Separator className="bg-secondary-foreground my-4 max-w-sm" />
-      <Button asChild variant="secondary">
-        <label htmlFor="dropzone-upload">Browse files</label>
-      </Button>
-      <input
-        type="file"
-        name="dropzone-upload"
-        id="dropzone-upload"
-        className="h-1 w-1 invisible absolute"
-        multiple
-        onChange={handleOnBrowse}
-        accept={acceptedFileTypes}
-      />
+      {files.length > 0 ? (
+        <ScrollArea className="h-[400px] mb-4">
+          <FilesUploadList
+            files={files}
+            uploadQueue={uploadQueue}
+            uploadedFiles={uploadedFiles}
+            onRemove={removeFile}
+            errorQueue={errorQueue}
+            disabled={disabled}
+          />
+        </ScrollArea>
+      ) : (
+        <EmptyDropZone handleOnBrowse={handleOnBrowse} />
+      )}
 
-      <div className="mt-14">
-        <p className="text-sm text-muted-foreground flex items-start gap-2">
-          <MdOutlineInfo /> Accepted file types: {acceptedFileTypes}
-        </p>
-        <p className="text-sm text-muted-foreground flex items-start gap-2">
-          <MdOutlineInfo /> Max file size: {CONFIG.MAX_FILE_SIZE} mb
-        </p>
-        <p className="text-sm text-muted-foreground flex items-start gap-2">
-          <MdOutlineInfo /> Max images per batch: {CONFIG.MAX_FILES_PER_BATCH}
-        </p>
-      </div>
+      {files.length > 0 && (
+        <>
+          <p className="text-sm text-muted-foreground text-right">
+            Total images: {files.length} / Total size:{' '}
+            {bytesToMegaBytes(
+              files.reduce((acc, file) => acc + file.size, 0),
+              true,
+            )}
+          </p>
+          <div className="flex flex-col my-2 mt-4 gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
+              <Label>Downloads limit</Label>
+              <DownloadOptions
+                downloadsLeft={downloadsLeft}
+                setDownloadsLeft={setDownloadsLeft}
+                disabled={disabled}
+              />
+            </div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <Label>Time limit</Label>
+              <ExpirationOptions
+                expirationTime={expirationTime}
+                setExpirationTime={setExpirationTime}
+                disabled={disabled}
+              />
+            </div>
+            <div className="flex items-center flex-wrap gap-2">
+              <Checkbox
+                id="private"
+                checked={isPrivate}
+                onClick={() => setIsPrivate((prev) => !prev)}
+                disabled={disabled}
+              />
+              <Label htmlFor="private">Protect with password</Label>
+              <Input
+                type="password"
+                ref={passwordRef}
+                placeholder="Password"
+                className="w-full max-w-xs"
+                value={password}
+                disabled={!isPrivate || disabled}
+                onChange={(e) => setPassword(e.target.value)}
+                maxLength={CONFIG.PASSWORD_MAX_LENGTH}
+                autoComplete="new-password"
+              />
+            </div>
+          </div>
+          <div className="mt-4 grid sm:grid-cols-2 gap-2">
+            <BrowseFilesBtn
+              size="lg"
+              handleOnBrowse={handleOnBrowse}
+              disabled={disabled}
+            >
+              Add more +
+            </BrowseFilesBtn>
+            <Button
+              size="lg"
+              className="bg-brand-primary font-semibold"
+              disabled={disabled}
+              onClick={initUpload}
+            >
+              Start upload
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   )
 }
