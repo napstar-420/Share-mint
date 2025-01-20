@@ -6,7 +6,7 @@ import { CONFIG } from '@/app/config'
 
 export default function ThankYou() {
   return (
-    <div className="grid place-items-center min-h-[100dvh] absolute top-0 left-0 w-full -z-10 pt-11 pb-4">
+    <div className="grid place-items-center w-full -z-10 pt-11 pb-4">
       <div className="flex flex-col items-center gap-2 text-center p-4">
         <Image src={ThankYouSvg} alt="Thank You" width={300} height={300} />
         <h1 className="scroll-m-20 mt-8 text-brand-primary text-4xl font-extrabold tracking-tight lg:text-5xl">

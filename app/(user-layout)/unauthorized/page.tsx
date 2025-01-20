@@ -6,7 +6,7 @@ import { BackgroundGrid } from '@/components/background-grid'
 
 export default function UnAuthorized() {
   return (
-    <div className="grid place-items-center h-screen w-full -z-10 absolute top-0 left-0 p-4">
+    <div className="grid place-items-center w-full -z-10 p-4">
       <BackgroundGrid />
       <div className="flex flex-col items-center gap-2 text-center">
         <span className="mb-6">

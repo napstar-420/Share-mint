@@ -53,7 +53,7 @@ export default async function DownloadPage({ params }: ComponentProps) {
   const previewLink = createPreviewLink(sharelink, { p: 's600' })
 
   return (
-    <div className="min-h-[calc(100dvh_-_120px)] grid place-items-center sm:p-4">
+    <div className="grid place-items-center sm:p-4">
       <div className="min-w-[300px] w-full max-w-3xl bg-primary-foreground border-2 px-4 py-32 rounded-2xl z-10">
         <div className="max-w-[420px] mx-auto">
           <h3 className="scroll-m-20 text-3xl font-semibold tracking-tight text-center">
