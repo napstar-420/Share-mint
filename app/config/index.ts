@@ -23,6 +23,8 @@ export const CONFIG = {
       IMAGES: '/admin/images',
       USERS: '/admin/users',
     },
+    PRIVACY_POLICY: '/privacy-policy',
+    TERMS_OF_SERVICE: '/terms-of-service',
   },
 
   FILE_TYPES: {

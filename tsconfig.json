@@ -28,6 +28,6 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "types/next-auth.d.ts"
-  ],
+, "app/(user-layout)/privacy-policy/page.mdx", "next.config.mjs"  ],
   "exclude": ["node_modules"]
 }
