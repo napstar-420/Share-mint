@@ -40,8 +40,9 @@ export const metadata: Metadata = {
     creator: '@napstar-420',
     images: [{ url: '/og-image.png' }],
   },
-
-  manifest: '/manifest.json',
+  other: {
+    'google-site-verification': 'evJP4aUVCbjGLyKsj9HOBDoZbrt4k2Buf_ZyOFQx6NI'
+  }
 }
 
 export default function RootLayout({
